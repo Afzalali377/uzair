@@ -1,0 +1,3022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Gesture Detection - Login</title>
+    <style>
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #20c997;
+            --surface: #ffffff;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --shadow-lg: 0 20px 40px rgba(0,0,0,.12);
+            --shadow-md: 0 12px 24px rgba(0,0,0,.10);
+        }
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideInUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+        
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(52, 152, 219, 0.5); }
+            50% { box-shadow: 0 0 15px rgba(52, 152, 219, 0.8); }
+            100% { box-shadow: 0 0 5px rgba(52, 152, 219, 0.5); }
+        }
+        
+        /* Confidence Level Styling */
+        
+        
+        
+        
+        
+        
+        
+        
+        /* Animation Classes */
+        .animate-fadeIn {
+            animation: fadeIn 0.8s ease forwards;
+        }
+        
+        .animate-fadeOut {
+            animation: fadeOut 0.5s ease forwards;
+        }
+        
+        .animate-slideInUp {
+            animation: slideInUp 0.8s ease forwards;
+        }
+        
+        .animate-pulse {
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        
+        .animate-bounce {
+            animation: bounce 2s ease infinite;
+        }
+        
+        .animate-wiggle {
+            animation: wiggle 0.5s ease;
+        }
+        @keyframes slideInLeft { from { transform: translateX(-30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideInRight { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes zoomIn { from { transform: scale(.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes rotateIn { from { transform: rotate(-8deg); opacity: 0; } to { transform: rotate(0); opacity: 1; } }
+        @keyframes heartBeat { 0% { transform: scale(1); } 25% { transform: scale(1.06); } 50% { transform: scale(1); } 75% { transform: scale(1.06); } 100% { transform: scale(1); } }
+        @keyframes shake { 0%,100%{ transform: translateX(0); } 25%{ transform: translateX(-6px); } 50%{ transform: translateX(6px);} 75%{ transform: translateX(-3px);} }
+        @keyframes flash { 0%,50%,100%{ opacity: 1; } 25%,75%{ opacity: .2; } }
+        .animate-slideInLeft { animation: slideInLeft .8s ease forwards; }
+        .animate-slideInRight { animation: slideInRight .8s ease forwards; }
+        .animate-zoomIn { animation: zoomIn .6s ease forwards; }
+        .animate-rotateIn { animation: rotateIn .6s ease forwards; }
+        .animate-heartBeat { animation: heartBeat 1.4s ease-in-out infinite; }
+        .animate-shake { animation: shake .5s ease; }
+        .animate-flash { animation: flash 1s ease; }
+        .reveal { opacity: 0; transform: translateY(24px); }
+        .reveal.visible { opacity: 1; transform: none; transition: transform .6s ease, opacity .6s ease; }
+        @keyframes ripple { from { opacity: .6; transform: translate(-50%,-50%) scale(1); } to { opacity: 0; transform: translate(-50%,-50%) scale(18); } }
+        .ripple { position: absolute; width: 6px; height: 6px; background: rgba(255,255,255,.6); border-radius: 50%; transform: translate(-50%,-50%); animation: ripple 600ms ease-out forwards; pointer-events: none; }
+        .quick-letter:hover { animation: wiggle .3s ease; }
+        .camera-container:hover { transform: translateY(-3px); transition: transform .2s ease; }
+        @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+        
+        /* Delay Classes */
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .login-header {
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .login-header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .face-capture-section {
+            margin-bottom: 30px;
+        }
+
+        .camera-container {
+            position: relative;
+            width: 100%;
+            max-width: 360px;
+            margin: 0 auto 20px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: radial-gradient(120% 120% at 50% 0%, rgba(102,126,234,.25), rgba(118,75,162,.35) 45%, #000 70%);
+            box-shadow: var(--shadow-lg);
+            aspect-ratio: 4 / 3;
+        }
+
+        #loginVideo {
+            width: 100%;
+            height: 225px;
+            object-fit: cover;
+        }
+
+        .camera-overlay {
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            pointer-events: none;
+            border: 3px solid transparent;
+            border-image: linear-gradient(45deg, var(--primary), var(--secondary)) 1;
+        }
+
+        .camera-container.camera-live .camera-overlay { animation: glow 2s ease-in-out infinite; }
+        .camera-container.camera-captured .camera-overlay { border-image: linear-gradient(45deg, var(--accent), var(--primary)) 1; }
+
+        .camera-reticle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            box-shadow: 0 0 0 2px rgba(255,255,255,.4) inset;
+            background: radial-gradient(circle at 50% 50%, rgba(255,255,255,.15), transparent 60%);
+            opacity: 0;
+            transition: opacity .3s ease;
+        }
+
+        .camera-container.camera-live .camera-reticle { opacity: 1; animation: pulse 1.6s ease-in-out infinite; }
+        .camera-container.camera-captured .camera-reticle { opacity: 1; box-shadow: 0 0 0 2px rgba(32,201,151,.7) inset; }
+
+        .camera-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .dashboard { width: 100%; max-width: 1100px; margin: 0 auto; padding: 24px; }
+        .main-panel { background: rgba(255,255,255,.95); backdrop-filter: blur(12px); border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 32px; }
+        .header h1 { letter-spacing: .5px; }
+        .btn { border-radius: var(--radius-sm); box-shadow: var(--shadow-md); transition: transform .15s ease, box-shadow .15s ease; }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 16px 30px rgba(0,0,0,.12); }
+        .btn:active { transform: translateY(0); }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; }
+        .btn-secondary { background: #eef2ff; color: var(--primary); border: 2px solid #e0e0e0; }
+        .btn-danger { background: #ef4444; color: #fff; border: none; }
+        .gesture-display { background: rgba(255,255,255,.98); border-radius: var(--radius); box-shadow: var(--shadow-md); padding: 24px; }
+        @media (max-width: 768px) { .main-panel { padding: 20px; } .dashboard { padding: 12px; } }
+
+        .captured-photo {
+            width: 100%;
+            max-width: 300px;
+            height: 225px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin: 0 auto 20px;
+            display: none;
+            border: 3px solid #28a745;
+        }
+
+        .login-form {
+            display: none;
+            background: rgba(255,255,255,.96);
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .login-status {
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 500;
+            display: none;
+        }
+
+        .login-status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .login-status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Status messages (shared for TTS and general status) */
+        .status {
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0;
+            font-weight: 500;
+            display: block;
+        }
+        .status.success {
+            background: #e6f6e9;
+            color: #116b39;
+            border: 1px solid #ccebd5;
+        }
+        .status.error {
+            background: #fde8e8;
+            color: #9b1c1c;
+            border: 1px solid #f5c2c2;
+        }
+        .status.processing {
+            background: #e8f1fd;
+            color: #1c3d9b;
+            border: 1px solid #c2d7f5;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .profile-preview {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 20px 0;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 14px;
+            box-shadow: 0 10px 24px rgba(0,0,0,.08);
+            border: 1px solid #e7e7e7;
+            display: none;
+        }
+
+        .profile-preview img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #667eea;
+        }
+
+        .profile-preview .user-info {
+            text-align: left;
+        }
+
+        .profile-preview .user-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .profile-preview .user-email {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .main-dashboard {
+            display: none;
+        }
+
+        .user-profile-bar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 0 0 0 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .user-profile-bar img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #667eea;
+        }
+
+        .user-profile-bar .user-info {
+            text-align: left;
+        }
+
+        .user-profile-bar .user-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9em;
+        }
+
+        .user-profile-bar .user-email {
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: background 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+        }
+        .btn-outline { background: transparent; color: #667eea; border: 2px solid #667eea; }
+        .sl-card { background: rgba(255,255,255,.95); backdrop-filter: blur(8px); border-radius: 16px; box-shadow: 0 14px 32px rgba(0,0,0,.15); width: 100%; padding: 20px; border: 2px solid #e0e0e0; }
+        .sl-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+        .sl-title { font-size: 20px; font-weight: 700; background: linear-gradient(45deg,#667eea,#764ba2); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+        .sl-controls { display:flex; gap:10px; flex-wrap:wrap; }
+        .sl-input { flex:1; min-width: 240px; padding: 10px 12px; border: 2px solid #e0e0e0; border-radius: 10px; outline: none; transition:.2s; }
+        .sl-input:focus { border-color:#667eea; box-shadow: 0 0 0 4px rgba(102,126,234,.12); }
+        .sl-preview { display:grid; grid-template-columns: repeat(auto-fill,minmax(80px,1fr)); gap:10px; margin-top:14px; }
+        .sl-tile { position:relative; border-radius:12px; overflow:hidden; background:#fff; border:1px solid #e7e7e7; box-shadow: 0 6px 14px rgba(0,0,0,.08); }
+        .sl-tile img { display:block; width:100%; height:80px; object-fit:cover; }
+        .sl-tile:hover { box-shadow: 0 10px 20px rgba(102,126,234,.25); }
+        .sl-badge { position:absolute; right:6px; top:6px; font-size:12px; padding:2px 6px; border-radius:8px; background:rgba(102,126,234,.14); color:#3a4ccc; }
+        .sl-toolbar { display:flex; gap:10px; }
+        .sl-quick { display:grid; grid-template-columns: repeat(auto-fill, minmax(28px,1fr)); gap:6px; margin-top:10px; }
+        .sl-quick .btn { padding:6px 0; border-radius:8px; font-size:12px; }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-header">
+            <h1>🤖 AI Gesture Detection</h1>
+            <p>Face Login & Profile Creation</p>
+        </div>
+
+        <div class="face-capture-section" id="faceCaptureSection">
+            <h3 style="margin-bottom: 20px; color: #333;">📷 Face Recognition Login</h3>
+            
+            <div class="camera-container" id="cameraContainer">
+                <video id="loginVideo" autoplay muted></video>
+                <div class="camera-overlay"></div>
+                <div class="camera-reticle"></div>
+            </div>
+
+            <div class="camera-controls">
+                <button id="startCameraBtn" class="btn btn-primary">📷 Start Camera</button>
+                <button id="capturePhotoBtn" class="btn btn-secondary" disabled>📸 Capture Photo</button>
+                <button id="retakePhotoBtn" class="btn btn-secondary" style="display: none;">🔄 Retake</button>
+            </div>
+
+            <img id="capturedPhoto" class="captured-photo" alt="Captured photo">
+            
+            <div id="loginStatus" class="login-status"></div>
+        </div>
+
+        <div class="login-form" id="loginForm">
+            <h3 style="margin-bottom: 20px; color: #333;">👤 Complete Your Profile</h3>
+            
+            <div class="profile-preview" id="profilePreview">
+                <img id="previewPhoto" alt="Profile photo">
+                <div class="user-info">
+                    <div class="user-name" id="previewName">User Name</div>
+                    <div class="user-email" id="previewEmail">user@example.com</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="userName">Full Name:</label>
+                <input type="text" id="userName" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="userEmail">Email:</label>
+                <input type="email" id="userEmail" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="userPassword">Password:</label>
+                <input type="password" id="userPassword" placeholder="Create a password" required>
+            </div>
+
+            <button id="completeLoginBtn" class="btn btn-primary" style="width: 100%;">🚀 Complete Login</button>
+        </div>
+    </div>
+
+    <!-- Main Dashboard (Hidden initially) -->
+    <div class="main-dashboard" id="mainDashboard">
+        <!-- User Profile Bar -->
+        <div class="user-profile-bar" id="userProfileBar">
+            <img id="profilePhoto" alt="Profile photo">
+            <div class="user-info">
+                <div class="user-name" id="profileName">User Name</div>
+                <div class="user-email" id="profileEmail">user@example.com</div>
+            </div>
+            <button class="logout-btn" id="logoutBtn">🚪 Logout</button>
+        </div>
+
+        <!-- Original Dashboard Content -->
+    <div class="dashboard">
+        <div class="main-panel">
+            <div class="header">
+                <h1>🤖 AI Gesture Detection Dashboard</h1>
+                <p>Advanced text and speech to gesture conversion with real-time analytics</p>
+            </div>
+
+            <div class="input-group" id="ttsSection">
+                <h3>🔊 Text to Speech</h3>
+                <div style="margin-bottom: 12px;">
+                    <textarea id="ttsText" placeholder="Enter text to convert to speech..." style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; resize: vertical; min-height: 60px;"></textarea>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                    <div>
+                        <label for="voiceSelect" style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">Voice</label>
+                        <select id="voiceSelect" style="width: 100%; padding: 8px; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 14px;">
+                            <option value="">Loading voices...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="speedSelect" style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">Speed</label>
+                        <select id="speedSelect" style="width: 100%; padding: 8px; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 14px;">
+                            <option value="0.75">Slow (0.75x)</option>
+                            <option value="1" selected>Normal (1x)</option>
+                            <option value="1.25">Fast (1.25x)</option>
+                            <option value="1.5">Fast (1.5x)</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button id="speakBtn" class="btn btn-primary" style="flex: 1;">🔊 Speak</button>
+                    <button id="pauseBtn" class="btn btn-secondary" style="flex: 1;" disabled>⏸️ Pause</button>
+                    <button id="stopSpeakBtn" class="btn btn-danger" style="flex: 1;" disabled>⏹️ Stop</button>
+                </div>
+                <div id="ttsStatus" style="margin-top: 10px; padding: 8px; border-radius: 6px; display: none;"></div>
+            </div>
+
+            
+                <div class="input-group">
+                    <h3>📝 Text Input</h3>
+                    <textarea
+                        id="textInput"
+                        class="text-input"
+                        placeholder="Type your message here... Try: 'Hello', 'I love you', 'Good job', 'Let's party', 'I'm confused'"
+                    ></textarea>
+                    <button id="processTextBtn" class="btn btn-primary">
+                        ✨ Analyze Text
+                    </button>
+                </div>
+
+                <div class="input-group">
+                    <h3>🎤 Audio Input</h3>
+                    <div class="audio-controls">
+                        <div class="controls-row">
+                            <button id="recordBtn" class="btn btn-primary">
+                                🎤 Record
+                            </button>
+                            <button id="stopBtn" class="btn btn-secondary" disabled>
+                                ⏹️ Stop
+                            </button>
+                        </div>
+                        <button id="clearBtn" class="btn btn-danger">
+                            🗑️ Clear All
+                        </button>
+                    </div>
+                    <div id="audioVisualization" class="audio-visualization" style="display: none;">
+                        <div class="audio-bars">
+                            <div class="audio-bar"></div>
+                            <div class="audio-bar"></div>
+                            <div class="audio-bar"></div>
+                            <div class="audio-bar"></div>
+                            <div class="audio-bar"></div>
+                            <div class="audio-bar"></div>
+                            <div class="audio-bar"></div>
+                        </div>
+                    </div>
+                    <div id="statusDisplay"></div>
+                    <div id="transcriptionDisplay" style="margin-top: 10px; padding: 10px; background: #e9ecef; border-radius: 8px; display: none;">
+                        <strong>Transcription:</strong> <span id="transcriptionText"></span>
+                    </div>
+                    
+                </div>
+            
+
+            <div class="gesture-display" id="gestureDisplay">
+                <div class="gesture-avatar"></div>
+            </div>
+
+            
+
+            <div style="background: white; padding: 20px; border-radius: 15px; border: 2px solid #e0e0e0; margin-bottom: 25px;">
+                <h3 style="margin-bottom: 10px; color: #333;">📚 Learn Sign Language</h3>
+                <p style="color:#666; margin-bottom:12px;">Recommended resources for high-quality ASL learning:</p>
+                <div style="display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:10px;">
+                    <a href="https://www.lifeprint.com/" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;">ASL University (Lifeprint)</a>
+                    <a href="https://www.startasl.com/" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;">Start ASL</a>
+                    <a href="https://www.handspeak.com/" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;">HandSpeak</a>
+                    <a href="https://www.signasl.org/" target="_blank" rel="noopener" class="btn btn-secondary" style="text-decoration:none;">Sign ASL Dictionary</a>
+                </div>
+            </div>
+
+            
+
+                <!-- ASL Finger Spelling Section -->
+                <div style="background: white; padding: 20px; border-radius: 15px; border: 2px solid #e0e0e0; margin-bottom: 25px;" class="animate-fadeIn">
+                    <h3 style="margin-bottom: 15px; color: #333;" class="animate-slideInUp">🤟 ASL Finger Spelling</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div>
+                            <label for="fingerSpellInput" style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">Word to Spell:</label>
+                            <input type="text" id="fingerSpellInput" placeholder="Enter a word to finger spell..." style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
+                            <button id="fingerSpellBtn" class="btn btn-primary animate-pulse" style="width: 100%; margin-top: 10px;">🤟 Finger Spell</button>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: 10px; color: #333;">Quick Letters</h4>
+                            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px;">
+                                <button class="btn btn-secondary quick-letter" data-letter="a" style="font-size: 0.8em;">A</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="b" style="font-size: 0.8em;">B</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="c" style="font-size: 0.8em;">C</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="d" style="font-size: 0.8em;">D</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="e" style="font-size: 0.8em;">E</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="f" style="font-size: 0.8em;">F</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="g" style="font-size: 0.8em;">G</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="h" style="font-size: 0.8em;">H</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="i" style="font-size: 0.8em;">I</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="j" style="font-size: 0.8em;">J</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="k" style="font-size: 0.8em;">K</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="l" style="font-size: 0.8em;">L</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="m" style="font-size: 0.8em;">M</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="n" style="font-size: 0.8em;">N</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="o" style="font-size: 0.8em;">O</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="p" style="font-size: 0.8em;">P</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="q" style="font-size: 0.8em;">Q</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="r" style="font-size: 0.8em;">R</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="s" style="font-size: 0.8em;">S</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="t" style="font-size: 0.8em;">T</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="u" style="font-size: 0.8em;">U</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="v" style="font-size: 0.8em;">V</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="w" style="font-size: 0.8em;">W</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="x" style="font-size: 0.8em;">X</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="y" style="font-size: 0.8em;">Y</button>
+                                <button class="btn btn-secondary quick-letter" data-letter="z" style="font-size: 0.8em;">Z</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="fingerSpellDisplay" style="margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px; display: none;">
+                        <h4 style="margin-bottom: 10px; color: #333;">Finger Spelling Result</h4>
+                    <div id="fingerSpellResult"></div>
+                </div>
+            </div>
+
+                <!-- ASL Emoji Converter Section -->
+                <div class="sl-card animate-fadeIn" style="margin-bottom: 25px;">
+                    <div class="sl-header">
+                        <div class="sl-title">Sign Language Letter Display</div>
+                        <div class="sl-toolbar">
+                            <button id="slAnimateBtn" class="btn btn-outline">Animate</button>
+                            <button id="slClearBtn" class="btn btn-secondary">Clear</button>
+                        </div>
+                    </div>
+                    <div class="sl-controls">
+                        <input id="slTextInput" class="sl-input" placeholder="Type letters or a word">
+                        <button id="slShowBtn" class="btn btn-primary">Show</button>
+                    </div>
+                    <div class="sl-quick" id="slQuickPanel"></div>
+                    <div id="slPreview" class="sl-preview"></div>
+                </div>
+            
+
+                <!-- ChatGPT Integration Section Removed -->
+
+                <!-- Training Data Management Section Removed -->
+                
+                <!-- ASL Emoji Converter Section Removed -->
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <script>
+        // Login System Variables
+        let loginStream = null;
+        let isLoggedIn = false;
+        let currentUser = null;
+        let capturedPhotoData = null;
+
+        // Login System Functions
+        async function startLoginCamera() {
+            try {
+                const video = document.getElementById('loginVideo');
+                const container = document.getElementById('cameraContainer');
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: { ideal: 640 }, 
+                        height: { ideal: 480 },
+                        facingMode: 'user'
+                    } 
+                });
+                
+                loginStream = stream;
+                video.srcObject = stream;
+                
+                document.getElementById('startCameraBtn').disabled = true;
+                document.getElementById('capturePhotoBtn').disabled = false;
+                if (container) container.classList.add('camera-live');
+                
+                showLoginStatus('Camera started successfully!', 'success');
+            } catch (error) {
+                console.error('Error starting login camera:', error);
+                showLoginStatus('Failed to start camera: ' + error.message, 'error');
+            }
+        }
+        
+        function captureLoginPhoto() {
+            const video = document.getElementById('loginVideo');
+            const container = document.getElementById('cameraContainer');
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0);
+            
+            capturedPhotoData = canvas.toDataURL('image/jpeg', 0.8);
+            
+            // Display captured photo
+            const capturedPhoto = document.getElementById('capturedPhoto');
+            capturedPhoto.src = capturedPhotoData;
+            capturedPhoto.style.display = 'block';
+            
+            // Hide video and show retake button
+            video.style.display = 'none';
+            document.getElementById('capturePhotoBtn').style.display = 'none';
+            document.getElementById('retakePhotoBtn').style.display = 'inline-flex';
+            if (container) {
+                container.classList.remove('camera-live');
+                container.classList.add('camera-captured');
+            }
+            
+            showLoginStatus('Photo captured successfully!', 'success');
+            
+            // Show login form after a short delay
+            setTimeout(() => {
+                showLoginForm();
+            }, 1000);
+        }
+        
+        function retakeLoginPhoto() {
+            const video = document.getElementById('loginVideo');
+            const capturedPhoto = document.getElementById('capturedPhoto');
+            const container = document.getElementById('cameraContainer');
+            
+            // Show video and hide photo
+            video.style.display = 'block';
+            capturedPhoto.style.display = 'none';
+            
+            // Show capture button and hide retake button
+            document.getElementById('capturePhotoBtn').style.display = 'inline-flex';
+            document.getElementById('retakePhotoBtn').style.display = 'none';
+            
+            capturedPhotoData = null;
+            showLoginStatus('Ready to capture photo', 'success');
+            if (container) {
+                container.classList.add('camera-live');
+                container.classList.remove('camera-captured');
+            }
+        }
+        
+        function showLoginForm() {
+            document.getElementById('faceCaptureSection').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+            
+            // Update profile preview
+            if (capturedPhotoData) {
+                document.getElementById('previewPhoto').src = capturedPhotoData;
+                document.getElementById('profilePreview').style.display = 'flex';
+            }
+        }
+        
+        function completeLogin() {
+            const userName = document.getElementById('userName').value.trim();
+            const userEmail = document.getElementById('userEmail').value.trim();
+            const userPassword = document.getElementById('userPassword').value;
+            
+            if (!userName || !userEmail || !userPassword) {
+                showLoginStatus('Please fill in all fields', 'error');
+                return;
+            }
+            
+            if (!capturedPhotoData) {
+                showLoginStatus('Please capture a photo first', 'error');
+                return;
+            }
+            
+            // Create user object
+            currentUser = {
+                name: userName,
+                email: userEmail,
+                photo: capturedPhotoData,
+                loginTime: new Date().toISOString()
+            };
+            
+            // Save user data to localStorage
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            // Stop camera
+            if (loginStream) {
+                loginStream.getTracks().forEach(track => track.stop());
+                loginStream = null;
+            }
+            
+            // Show main dashboard
+            showMainDashboard();
+            
+            showLoginStatus('Login successful! Welcome ' + userName, 'success');
+        }
+        
+        function showMainDashboard() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('mainDashboard').style.display = 'block';
+            
+            // Update profile bar
+            if (currentUser) {
+                document.getElementById('profilePhoto').src = currentUser.photo;
+                document.getElementById('profileName').textContent = currentUser.name;
+                document.getElementById('profileEmail').textContent = currentUser.email;
+            }
+            
+            // Initialize dashboard features
+            initializeDashboard();
+        }
+        
+        function logout() {
+            // Clear user data
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            
+            // Show login page
+            document.getElementById('mainDashboard').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'block';
+            
+            // Reset login form
+            document.getElementById('faceCaptureSection').style.display = 'block';
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('capturedPhoto').style.display = 'none';
+            document.getElementById('startCameraBtn').disabled = false;
+            document.getElementById('capturePhotoBtn').disabled = true;
+            document.getElementById('capturePhotoBtn').style.display = 'inline-flex';
+            document.getElementById('retakePhotoBtn').style.display = 'none';
+            
+            // Clear form fields
+            document.getElementById('userName').value = '';
+            document.getElementById('userEmail').value = '';
+            document.getElementById('userPassword').value = '';
+            
+            showLoginStatus('Logged out successfully', 'success');
+        }
+        
+        function showLoginStatus(message, type) {
+            const statusDiv = document.getElementById('loginStatus');
+            statusDiv.textContent = message;
+            statusDiv.className = `login-status ${type}`;
+            statusDiv.style.display = 'block';
+            
+            // Auto-hide success messages after 3 seconds
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 3000);
+            }
+        }
+        
+        function checkExistingLogin() {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showMainDashboard();
+                return true;
+            }
+            return false;
+        }
+        
+        function initializeDashboard() {
+            // Initialize all dashboard features here
+            // This will be called after successful login
+            console.log('Dashboard initialized for user:', currentUser.name);
+            
+            // Initialize all existing dashboard features
+            if (processTextBtn) processTextBtn.disabled = true;
+            const textInputGroup = document.getElementById('textInput') ? document.getElementById('textInput').closest('.input-group') : null;
+            if (textInputGroup) textInputGroup.remove();
+            const audioInputGroup = document.getElementById('recordBtn') ? document.getElementById('recordBtn').closest('.input-group') : null;
+            if (audioInputGroup) audioInputGroup.remove();
+            
+            // Training Data Management features removed
+            
+            // Set default sign language category as active
+            const aslCategory = document.querySelector('.sign-category[data-category="asl"]');
+            if (aslCategory) {
+                aslCategory.style.borderColor = '#667eea';
+                aslCategory.style.backgroundColor = '#f8f9fa';
+            }
+            
+
+           
+            // Initialize speech recognition on page load
+            if (initializeSpeechRecognition()) {
+                console.log('Speech recognition initialized successfully');
+            } else {
+                console.log('Speech recognition not available');
+                if (recordBtn) {
+                    recordBtn.textContent = '🎤 Not Supported';
+                    recordBtn.disabled = true;
+                }
+            }
+            
+            
+
+            // Initialize ASL features
+            console.log('Advanced ASL features loaded:', Object.keys(advancedASLDatabase).length, 'signs available');
+            
+            // Welcome message with ASL features
+            setTimeout(() => {
+                showStatus('Advanced ASL system ready! Try "my name is uzair" for word-by-word gestures.', 'success');
+            }, 1000);
+           
+            console.log('Gesture Detection Dashboard Loaded!');
+        }
+
+        // Login System Event Listeners
+        document.getElementById('startCameraBtn').addEventListener('click', startLoginCamera);
+        document.getElementById('capturePhotoBtn').addEventListener('click', captureLoginPhoto);
+        document.getElementById('retakePhotoBtn').addEventListener('click', retakeLoginPhoto);
+        document.getElementById('completeLoginBtn').addEventListener('click', completeLogin);
+        document.getElementById('logoutBtn').addEventListener('click', logout);
+
+        // Check for existing login on page load
+        window.addEventListener('load', () => {
+            if (!checkExistingLogin()) {
+                showLoginStatus('Please start camera to begin login process', 'success');
+            }
+        });
+
+        // Gesture Database
+        const gestureDatabase = {
+            // Greetings & Introductions
+            'hello': { emoji: '👋', name: 'Wave Hello', description: 'Friendly greeting gesture', confidence: 95, category: 'greetings' },
+            'hi': { emoji: '👋', name: 'Wave Hello', description: 'Casual greeting', confidence: 90, category: 'greetings' },
+            'hey': { emoji: '👋', name: 'Hey Wave', description: 'Informal greeting', confidence: 92, category: 'greetings' },
+            'namaste': { emoji: '🙏', name: 'Namaste', description: 'Traditional Indian greeting', confidence: 98, category: 'greetings' },
+            'good morning': { emoji: '🌅', name: 'Good Morning', description: 'Morning greeting', confidence: 94, category: 'greetings' },
+            'good evening': { emoji: '🌆', name: 'Good Evening', description: 'Evening greeting', confidence: 94, category: 'greetings' },
+            'good night': { emoji: '🌙', name: 'Good Night', description: 'Night farewell', confidence: 93, category: 'greetings' },
+            'welcome': { emoji: '🤗', name: 'Welcome Hug', description: 'Welcoming gesture', confidence: 96, category: 'greetings' },
+            'goodbye': { emoji: '👋', name: 'Wave Goodbye', description: 'Farewell gesture', confidence: 92, category: 'greetings' },
+            'bye': { emoji: '👋', name: 'Wave Goodbye', description: 'Casual farewell', confidence: 88, category: 'greetings' },
+
+            // Identity and Introduction Phrases
+            'who are you': { emoji: '🤖', name: 'AI Identity', description: 'I am an AI assistant for sign language learning', confidence: 95, category: 'questions' },
+            'what is your name': { emoji: '🤖', name: 'AI Name', description: 'My name is Jarvis, your AI assistant', confidence: 95, category: 'questions' },
+            'my name is': { emoji: '👤', name: 'My Name Is', description: 'Introducing yourself with name sign', confidence: 90, category: 'introductions' },
+            'i am': { emoji: '👤', name: 'I Am', description: 'Self-identification gesture', confidence: 88, category: 'introductions' },
+            'call me': { emoji: '📞', name: 'Call Me', description: 'Requesting to be called by name', confidence: 85, category: 'introductions' },
+
+            // Individual Words for Name Introduction
+            'my': { emoji: '👤', name: 'ASL My', description: 'ASL sign for "my" - pointing to chest', confidence: 95, category: 'pronouns' },
+            'name': { emoji: '📝', name: 'ASL Name', description: 'ASL sign for "name" - index and middle finger on chin', confidence: 96, category: 'nouns' },
+            'is': { emoji: '👆', name: 'ASL Is', description: 'ASL sign for "is" - pointing gesture', confidence: 90, category: 'verbs' },
+            'are': { emoji: '👆', name: 'ASL Are', description: 'ASL sign for "are" - pointing gesture', confidence: 70, category: 'verbs' },
+            'you': { emoji: '👆', name: 'ASL You', description: 'ASL sign for "you" - pointing to person', confidence: 95, category: 'pronouns' },
+            'who': { emoji: '❓', name: 'ASL Who', description: 'ASL sign for "who" - W handshape pointing', confidence: 96, category: 'questions' },
+            
+            // Common names and their finger spelling
+            'uzair': { emoji: '🤟', name: 'ASL Uzair', description: 'Finger spelling: U-Z-A-I-R', confidence: 98, category: 'names' },
+            'ali': { emoji: '🤟', name: 'ASL Ali', description: 'Finger spelling: A-L-I', confidence: 98, category: 'names' },
+            'ahmed': { emoji: '🤟', name: 'ASL Ahmed', description: 'Finger spelling: A-H-M-E-D', confidence: 98, category: 'names' },
+            'fatima': { emoji: '🤟', name: 'ASL Fatima', description: 'Finger spelling: F-A-T-I-M-A', confidence: 98, category: 'names' },
+            'mohammed': { emoji: '🤟', name: 'ASL Mohammed', description: 'Finger spelling: M-O-H-A-M-M-E-D', confidence: 98, category: 'names' },
+            'aisha': { emoji: '🤟', name: 'ASL Aisha', description: 'Finger spelling: A-I-S-H-A', confidence: 98, category: 'names' },
+            'omar': { emoji: '🤟', name: 'ASL Omar', description: 'Finger spelling: O-M-A-R', confidence: 98, category: 'names' },
+            'khadija': { emoji: '🤟', name: 'ASL Khadija', description: 'Finger spelling: K-H-A-D-I-J-A', confidence: 98, category: 'names' },
+
+            // Basic Emotions
+            'happy': { emoji: '😊', name: 'Happy Smile', description: 'Expressing happiness and joy', confidence: 94, category: 'emotions' },
+            'joy': { emoji: '😄', name: 'Joyful Expression', description: 'Pure joy and delight', confidence: 96, category: 'emotions' },
+            'excited': { emoji: '🤩', name: 'Star-Struck', description: 'Excitement and amazement', confidence: 93, category: 'emotions' },
+            'love': { emoji: '❤️', name: 'Heart Love', description: 'Expressing love and affection', confidence: 96, category: 'emotions' },
+            'i love you': { emoji: '🥰', name: 'Love You', description: 'Expressing deep love', confidence: 98, category: 'emotions' },
+            'sad': { emoji: '😢', name: 'Sad Expression', description: 'Showing sadness or disappointment', confidence: 91, category: 'emotions' },
+            'angry': { emoji: '😠', name: 'Angry Expression', description: 'Displaying anger or frustration', confidence: 89, category: 'emotions' },
+            'surprised': { emoji: '😲', name: 'Surprised', description: 'Shock or surprise', confidence: 92, category: 'emotions' },
+            'confused': { emoji: '😕', name: 'Confused', description: 'Puzzled or uncertain', confidence: 88, category: 'emotions' },
+            'worried': { emoji: '😟', name: 'Worried', description: 'Anxiety or concern', confidence: 90, category: 'emotions' },
+            'scared': { emoji: '😨', name: 'Scared', description: 'Fear or fright', confidence: 93, category: 'emotions' },
+            'tired': { emoji: '😴', name: 'Sleepy', description: 'Fatigue or sleepiness', confidence: 89, category: 'emotions' },
+
+            // Positive Actions & Responses
+            'thank you': { emoji: '🙏', name: 'Thank You', description: 'Gesture of gratitude', confidence: 97, category: 'actions' },
+            'thanks': { emoji: '🙏', name: 'Thanks', description: 'Expressing gratitude', confidence: 94, category: 'actions' },
+            'yes': { emoji: '👍', name: 'Thumbs Up', description: 'Positive agreement', confidence: 96, category: 'actions' },
+            'no': { emoji: '👎', name: 'Thumbs Down', description: 'Negative response', confidence: 94, category: 'actions' },
+            'ok': { emoji: '👌', name: 'OK Sign', description: 'Everything is fine', confidence: 95, category: 'actions' },
+            'okay': { emoji: '👌', name: 'OK Sign', description: 'Agreement or approval', confidence: 93, category: 'actions' },
+            'perfect': { emoji: '👌', name: 'Perfect Sign', description: 'Something is perfect', confidence: 97, category: 'actions' },
+            'good job': { emoji: '👏', name: 'Applause', description: 'Praising good work', confidence: 96, category: 'actions' },
+            'well done': { emoji: '👏', name: 'Clapping', description: 'Congratulating achievement', confidence: 94, category: 'actions' },
+            'bravo': { emoji: '👏', name: 'Bravo Clap', description: 'Excellent performance praise', confidence: 98, category: 'actions' },
+
+            // Social Expressions
+            'please': { emoji: '🙏', name: 'Please Gesture', description: 'Making a polite request', confidence: 93, category: 'expressions' },
+            'sorry': { emoji: '😔', name: 'Apologetic', description: 'Expressing regret or apology', confidence: 91, category: 'expressions' },
+            'help': { emoji: '🙋‍♂️', name: 'Raise Hand', description: 'Seeking assistance', confidence: 94, category: 'expressions' },
+            'congratulations': { emoji: '🎉', name: 'Celebration', description: 'Celebrating achievement', confidence: 96, category: 'expressions' },
+            'good luck': { emoji: '🤞', name: 'Crossed Fingers', description: 'Wishing good fortune', confidence: 92, category: 'expressions' },
+
+            // Party & Celebration
+            'party': { emoji: '🎉', name: 'Party Time', description: 'Celebration and fun', confidence: 95, category: 'social' },
+            'celebrate': { emoji: '🥳', name: 'Party Face', description: 'Celebrating with joy', confidence: 96, category: 'social' },
+            'cheers': { emoji: '🥂', name: 'Cheers Toast', description: 'Toasting celebration', confidence: 94, category: 'social' },
+            'dance': { emoji: '💃', name: 'Dancing', description: 'Dancing with joy', confidence: 93, category: 'social' },
+            'music': { emoji: '🎵', name: 'Musical Note', description: 'Enjoying music', confidence: 90, category: 'social' },
+            'fun': { emoji: '🎊', name: 'Confetti', description: 'Having fun', confidence: 92, category: 'social' },
+
+            // Reactions & Responses
+            'wow': { emoji: '🤩', name: 'Amazed', description: 'Impressed or amazed', confidence: 94, category: 'reactions' },
+            'amazing': { emoji: '🤩', name: 'Star-Struck', description: 'Something is amazing', confidence: 96, category: 'reactions' },
+            'awesome': { emoji: '😎', name: 'Cool Sunglasses', description: 'Something is awesome', confidence: 93, category: 'reactions' },
+            'cool': { emoji: '😎', name: 'Cool', description: 'Something is cool', confidence: 91, category: 'reactions' },
+            'funny': { emoji: '😂', name: 'Laughing', description: 'Something is funny', confidence: 95, category: 'reactions' },
+            'hilarious': { emoji: '🤣', name: 'Rolling Laughter', description: 'Extremely funny', confidence: 97, category: 'reactions' }
+        };
+
+        // Global variables
+        let history = [];
+        let stats = {
+            totalGestures: 0,
+            totalConfidence: 0,
+            categoryCount: {}
+        };
+        let isRecording = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let recognition = null;
+        
+        // Sign language variables
+        let selectedSignLanguage = 'asl';
+        
+        // Enhanced ASL Database with Advanced Features
+        const advancedASLDatabase = {
+            // Finger Spelling Alphabet
+            'a': { emoji: '✊', name: 'ASL Letter A', description: 'Finger spelling: A - Fist with thumb on side', confidence: 98, category: 'fingerspelling' },
+            'b': { emoji: '✋', name: 'ASL Letter B', description: 'Finger spelling: B - Flat hand, fingers together', confidence: 98, category: 'fingerspelling' },
+            'c': { emoji: '🤲', name: 'ASL Letter C', description: 'Finger spelling: C - Curved hand', confidence: 98, category: 'fingerspelling' },
+            'd': { emoji: '👉', name: 'ASL Letter D', description: 'Finger spelling: D - Index finger pointing up', confidence: 98, category: 'fingerspelling' },
+            'e': { emoji: '✊', name: 'ASL Letter E', description: 'Finger spelling: E - Fingers curled', confidence: 98, category: 'fingerspelling' },
+            'f': { emoji: '👌', name: 'ASL Letter F', description: 'Finger spelling: F - Index and thumb touching', confidence: 98, category: 'fingerspelling' },
+            'g': { emoji: '👉', name: 'ASL Letter G', description: 'Finger spelling: G - Index finger pointing', confidence: 98, category: 'fingerspelling' },
+            'h': { emoji: '✌️', name: 'ASL Letter H', description: 'Finger spelling: H - Index and middle finger', confidence: 98, category: 'fingerspelling' },
+            'i': { emoji: '☝️', name: 'ASL Letter I', description: 'Finger spelling: I - Pinky finger up', confidence: 98, category: 'fingerspelling' },
+            'j': { emoji: '☝️➰', name: 'ASL Letter J', description: 'Finger spelling: J - Pinky finger with motion', confidence: 98, category: 'fingerspelling' },
+            'k': { emoji: '✌️', name: 'ASL Letter K', description: 'Finger spelling: K - Index and middle finger spread', confidence: 98, category: 'fingerspelling' },
+            'l': { emoji: '🤙', name: 'ASL Letter L', description: 'Finger spelling: L - Thumb and index finger', confidence: 98, category: 'fingerspelling' },
+            'm': { emoji: '✊', name: 'ASL Letter M', description: 'Finger spelling: M - Three fingers down', confidence: 98, category: 'fingerspelling' },
+            'n': { emoji: '✊', name: 'ASL Letter N', description: 'Finger spelling: N - Two fingers down', confidence: 98, category: 'fingerspelling' },
+            'o': { emoji: '👌', name: 'ASL Letter O', description: 'Finger spelling: O - Fingers curled in circle', confidence: 98, category: 'fingerspelling' },
+            'p': { emoji: '👇', name: 'ASL Letter P', description: 'Finger spelling: P - Index finger pointing down', confidence: 98, category: 'fingerspelling' },
+            'q': { emoji: '👇', name: 'ASL Letter Q', description: 'Finger spelling: Q - Index finger pointing down', confidence: 98, category: 'fingerspelling' },
+            'r': { emoji: '🤞', name: 'ASL Letter R', description: 'Finger spelling: R - Index and middle finger crossed', confidence: 98, category: 'fingerspelling' },
+            's': { emoji: '✊', name: 'ASL Letter S', description: 'Finger spelling: S - Fist', confidence: 98, category: 'fingerspelling' },
+            't': { emoji: '✊', name: 'ASL Letter T', description: 'Finger spelling: T - Index finger pointing up', confidence: 98, category: 'fingerspelling' },
+            'u': { emoji: '✌️', name: 'ASL Letter U', description: 'Finger spelling: U - Index and middle finger up', confidence: 98, category: 'fingerspelling' },
+            'v': { emoji: '✌️', name: 'ASL Letter V', description: 'Finger spelling: V - Index and middle finger spread', confidence: 98, category: 'fingerspelling' },
+            'w': { emoji: '🖖', name: 'ASL Letter W', description: 'Finger spelling: W - Three fingers up', confidence: 98, category: 'fingerspelling' },
+            'x': { emoji: '☝️', name: 'ASL Letter X', description: 'Finger spelling: X - Index finger bent', confidence: 98, category: 'fingerspelling' },
+            'y': { emoji: '🤙', name: 'ASL Letter Y', description: 'Finger spelling: Y - Thumb and pinky up', confidence: 98, category: 'fingerspelling' },
+            'z': { emoji: '✍️', name: 'ASL Letter Z', description: 'Finger spelling: Z - Index finger with motion', confidence: 98, category: 'fingerspelling' },
+
+            // Advanced ASL Signs
+            'family': { emoji: '👨‍👩‍👧‍👦', name: 'ASL Family', description: 'ASL sign for family - F handshape moving in circle', confidence: 95, category: 'family' },
+            'mother': { emoji: '👩', name: 'ASL Mother', description: 'ASL sign for mother - Thumb on chin', confidence: 96, category: 'family' },
+            'father': { emoji: '👨', name: 'ASL Father', description: 'ASL sign for father - Thumb on forehead', confidence: 96, category: 'family' },
+            'sister': { emoji: '👧', name: 'ASL Sister', description: 'ASL sign for sister - Index finger on chin', confidence: 94, category: 'family' },
+            'brother': { emoji: '👦', name: 'ASL Brother', description: 'ASL sign for brother - Index finger on forehead', confidence: 94, category: 'family' },
+            'baby': { emoji: '👶', name: 'ASL Baby', description: 'ASL sign for baby - Cradling motion', confidence: 93, category: 'family' },
+            'child': { emoji: '🧒', name: 'ASL Child', description: 'ASL sign for child - Patting motion', confidence: 92, category: 'family' },
+
+            // Numbers
+            'one': { emoji: '1️⃣', name: 'ASL Number 1', description: 'ASL sign for number 1 - Index finger up', confidence: 98, category: 'numbers' },
+            'two': { emoji: '2️⃣', name: 'ASL Number 2', description: 'ASL sign for number 2 - Index and middle finger', confidence: 98, category: 'numbers' },
+            'three': { emoji: '3️⃣', name: 'ASL Number 3', description: 'ASL sign for number 3 - Three fingers up', confidence: 98, category: 'numbers' },
+            'four': { emoji: '4️⃣', name: 'ASL Number 4', description: 'ASL sign for number 4 - Four fingers up', confidence: 98, category: 'numbers' },
+            'five': { emoji: '5️⃣', name: 'ASL Number 5', description: 'ASL sign for number 5 - All fingers up', confidence: 98, category: 'numbers' },
+            'six': { emoji: '6️⃣', name: 'ASL Number 6', description: 'ASL sign for number 6 - Thumb and pinky up', confidence: 98, category: 'numbers' },
+            'seven': { emoji: '7️⃣', name: 'ASL Number 7', description: 'ASL sign for number 7 - Thumb and index finger', confidence: 98, category: 'numbers' },
+            'eight': { emoji: '8️⃣', name: 'ASL Number 8', description: 'ASL sign for number 8 - Thumb and three fingers', confidence: 98, category: 'numbers' },
+            'nine': { emoji: '9️⃣', name: 'ASL Number 9', description: 'ASL sign for number 9 - Thumb and four fingers', confidence: 98, category: 'numbers' },
+            'ten': { emoji: '🔟', name: 'ASL Number 10', description: 'ASL sign for number 10 - Thumb up', confidence: 98, category: 'numbers' },
+
+            // Colors
+            'red': { emoji: '🔴', name: 'ASL Red', description: 'ASL sign for red - Index finger on chin', confidence: 94, category: 'colors' },
+            'blue': { emoji: '🔵', name: 'ASL Blue', description: 'ASL sign for blue - B handshape moving', confidence: 94, category: 'colors' },
+            'green': { emoji: '🟢', name: 'ASL Green', description: 'ASL sign for green - G handshape moving', confidence: 94, category: 'colors' },
+            'yellow': { emoji: '🟡', name: 'ASL Yellow', description: 'ASL sign for yellow - Y handshape moving', confidence: 94, category: 'colors' },
+            'white': { emoji: '⚪', name: 'ASL White', description: 'ASL sign for white - W handshape on chest', confidence: 94, category: 'colors' },
+            'black': { emoji: '⚫', name: 'ASL Black', description: 'ASL sign for black - Index finger on forehead', confidence: 94, category: 'colors' },
+
+            // ASL Alphabet
+            'a': { emoji: '✊', name: 'ASL A', description: 'ASL sign for letter A - Fist', confidence: 98, category: 'alphabet' },
+            'b': { emoji: '✋', name: 'ASL B', description: 'ASL sign for letter B - Open palm', confidence: 98, category: 'alphabet' },
+            'c': { emoji: '🤲', name: 'ASL C', description: 'ASL sign for letter C - Curved hand', confidence: 98, category: 'alphabet' },
+            'd': { emoji: '👉', name: 'ASL D', description: 'ASL sign for letter D - Pointing hand', confidence: 98, category: 'alphabet' },
+            'e': { emoji: '✊', name: 'ASL E', description: 'ASL sign for letter E - Closed fist', confidence: 98, category: 'alphabet' },
+            'f': { emoji: '👌', name: 'ASL F', description: 'ASL sign for letter F - OK sign', confidence: 98, category: 'alphabet' },
+            'g': { emoji: '👉', name: 'ASL G', description: 'ASL sign for letter G - Side pointing', confidence: 98, category: 'alphabet' },
+            'h': { emoji: '✌️', name: 'ASL H', description: 'ASL sign for letter H - Two fingers sideways', confidence: 98, category: 'alphabet' },
+            'i': { emoji: '☝️', name: 'ASL I', description: 'ASL sign for letter I - One finger up', confidence: 98, category: 'alphabet' },
+            'j': { emoji: '☝️➰', name: 'ASL J', description: 'ASL sign for letter J - One finger drawing J motion', confidence: 98, category: 'alphabet' },
+            'k': { emoji: '✌️', name: 'ASL K', description: 'ASL sign for letter K - Peace sign', confidence: 98, category: 'alphabet' },
+            'l': { emoji: '🤙', name: 'ASL L', description: 'ASL sign for letter L - L-shape with thumb and finger', confidence: 98, category: 'alphabet' },
+            'm': { emoji: '✊', name: 'ASL M', description: 'ASL sign for letter M - Fist with 3 fingers inside', confidence: 98, category: 'alphabet' },
+            'n': { emoji: '✊', name: 'ASL N', description: 'ASL sign for letter N - Fist with 2 fingers inside', confidence: 98, category: 'alphabet' },
+            'o': { emoji: '👌', name: 'ASL O', description: 'ASL sign for letter O - Circular shape', confidence: 98, category: 'alphabet' },
+            'p': { emoji: '👇', name: 'ASL P', description: 'ASL sign for letter P - Point down', confidence: 98, category: 'alphabet' },
+            'q': { emoji: '👇', name: 'ASL Q', description: 'ASL sign for letter Q - Point down', confidence: 98, category: 'alphabet' },
+            'r': { emoji: '🤞', name: 'ASL R', description: 'ASL sign for letter R - Fingers crossed', confidence: 98, category: 'alphabet' },
+            's': { emoji: '✊', name: 'ASL S', description: 'ASL sign for letter S - Fist', confidence: 98, category: 'alphabet' },
+            't': { emoji: '✊', name: 'ASL T', description: 'ASL sign for letter T - Closed fist with thumb in', confidence: 98, category: 'alphabet' },
+            'u': { emoji: '✌️', name: 'ASL U', description: 'ASL sign for letter U - Two fingers up', confidence: 98, category: 'alphabet' },
+            'v': { emoji: '✌️', name: 'ASL V', description: 'ASL sign for letter V - Victory sign', confidence: 98, category: 'alphabet' },
+            'w': { emoji: '🖖', name: 'ASL W', description: 'ASL sign for letter W - Three fingers up', confidence: 98, category: 'alphabet' },
+            'x': { emoji: '☝️', name: 'ASL X', description: 'ASL sign for letter X - Index bent', confidence: 98, category: 'alphabet' },
+            'y': { emoji: '🤙', name: 'ASL Y', description: 'ASL sign for letter Y - Shaka sign', confidence: 98, category: 'alphabet' },
+            'z': { emoji: '✍️', name: 'ASL Z', description: 'ASL sign for letter Z - Finger drawing Z motion', confidence: 98, category: 'alphabet' },
+
+            // ASL Numbers
+            '0': { emoji: '👌', name: 'ASL 0', description: 'ASL sign for number 0', confidence: 98, category: 'numbers' },
+            '1': { emoji: '☝️', name: 'ASL 1', description: 'ASL sign for number 1', confidence: 98, category: 'numbers' },
+            '2': { emoji: '✌️', name: 'ASL 2', description: 'ASL sign for number 2', confidence: 98, category: 'numbers' },
+            '3': { emoji: '🤟', name: 'ASL 3', description: 'ASL sign for number 3', confidence: 98, category: 'numbers' },
+            '4': { emoji: '✋', name: 'ASL 4', description: 'ASL sign for number 4', confidence: 98, category: 'numbers' },
+            '5': { emoji: '🖐️', name: 'ASL 5', description: 'ASL sign for number 5', confidence: 98, category: 'numbers' },
+            '6': { emoji: '🤙', name: 'ASL 6', description: 'ASL sign for number 6', confidence: 98, category: 'numbers' },
+            '7': { emoji: '👍', name: 'ASL 7', description: 'ASL sign for number 7', confidence: 98, category: 'numbers' },
+            '8': { emoji: '🤞', name: 'ASL 8', description: 'ASL sign for number 8', confidence: 98, category: 'numbers' },
+            '9': { emoji: '👆', name: 'ASL 9', description: 'ASL sign for number 9', confidence: 98, category: 'numbers' },
+
+            // Advanced Emotions
+            'proud': { emoji: '😌', name: 'ASL Proud', description: 'ASL sign for proud - P handshape on chest', confidence: 92, category: 'emotions' },
+            'jealous': { emoji: '😒', name: 'ASL Jealous', description: 'ASL sign for jealous - J handshape on chest', confidence: 90, category: 'emotions' },
+            'embarrassed': { emoji: '😳', name: 'ASL Embarrassed', description: 'ASL sign for embarrassed - E handshape on cheeks', confidence: 91, category: 'emotions' },
+            'nervous': { emoji: '😰', name: 'ASL Nervous', description: 'ASL sign for nervous - N handshape shaking', confidence: 89, category: 'emotions' },
+            'excited': { emoji: '🤩', name: 'ASL Excited', description: 'ASL sign for excited - E handshape moving', confidence: 93, category: 'emotions' },
+
+            // Time and Calendar
+            'today': { emoji: '📅', name: 'ASL Today', description: 'ASL sign for today - Y handshape moving down', confidence: 95, category: 'time' },
+            'yesterday': { emoji: '📅', name: 'ASL Yesterday', description: 'ASL sign for yesterday - Y handshape moving back', confidence: 95, category: 'time' },
+            'tomorrow': { emoji: '📅', name: 'ASL Tomorrow', description: 'ASL sign for tomorrow - Y handshape moving forward', confidence: 95, category: 'time' },
+            'morning': { emoji: '🌅', name: 'ASL Morning', description: 'ASL sign for morning - M handshape on arm', confidence: 94, category: 'time' },
+            'afternoon': { emoji: '🌞', name: 'ASL Afternoon', description: 'ASL sign for afternoon - A handshape on arm', confidence: 94, category: 'time' },
+            'night': { emoji: '🌙', name: 'ASL Night', description: 'ASL sign for night - N handshape on arm', confidence: 94, category: 'time' },
+            'week': { emoji: '📅', name: 'ASL Week', description: 'ASL sign for week - W handshape moving', confidence: 93, category: 'time' },
+            'month': { emoji: '📅', name: 'ASL Month', description: 'ASL sign for month - M handshape moving', confidence: 93, category: 'time' },
+            'year': { emoji: '📅', name: 'ASL Year', description: 'ASL sign for year - Y handshape moving', confidence: 93, category: 'time' },
+
+            // Food and Drinks
+            'eat': { emoji: '🍽️', name: 'ASL Eat', description: 'ASL sign for eat - Hand to mouth', confidence: 96, category: 'food' },
+            'drink': { emoji: '🥤', name: 'ASL Drink', description: 'ASL sign for drink - C handshape to mouth', confidence: 96, category: 'food' },
+            'hungry': { emoji: '🍽️', name: 'ASL Hungry', description: 'ASL sign for hungry - Hand on stomach', confidence: 94, category: 'food' },
+            'thirsty': { emoji: '🥤', name: 'ASL Thirsty', description: 'ASL sign for thirsty - Index finger on throat', confidence: 94, category: 'food' },
+            'food': { emoji: '🍕', name: 'ASL Food', description: 'ASL sign for food - F handshape to mouth', confidence: 95, category: 'food' },
+            'water': { emoji: '💧', name: 'ASL Water', description: 'ASL sign for water - W handshape to mouth', confidence: 95, category: 'food' },
+            'bread': { emoji: '🍞', name: 'ASL Bread', description: 'ASL sign for bread - B handshape cutting', confidence: 93, category: 'food' },
+            'milk': { emoji: '🥛', name: 'ASL Milk', description: 'ASL sign for milk - Squeezing motion', confidence: 93, category: 'food' },
+
+            // School and Education
+            'learn': { emoji: '📚', name: 'ASL Learn', description: 'ASL sign for learn - L handshape on forehead', confidence: 95, category: 'education' },
+            'teach': { emoji: '👨‍🏫', name: 'ASL Teach', description: 'ASL sign for teach - T handshape moving', confidence: 95, category: 'education' },
+            'school': { emoji: '🏫', name: 'ASL School', description: 'ASL sign for school - Clapping motion', confidence: 96, category: 'education' },
+            'student': { emoji: '👨‍🎓', name: 'ASL Student', description: 'ASL sign for student - S handshape on chest', confidence: 94, category: 'education' },
+            'teacher': { emoji: '👩‍🏫', name: 'ASL Teacher', description: 'ASL sign for teacher - T handshape on chest', confidence: 94, category: 'education' },
+            'book': { emoji: '📖', name: 'ASL Book', description: 'ASL sign for book - B handshape opening', confidence: 95, category: 'education' },
+            'read': { emoji: '📖', name: 'ASL Read', description: 'ASL sign for read - R handshape moving', confidence: 95, category: 'education' },
+            'write': { emoji: '✍️', name: 'ASL Write', description: 'ASL sign for write - W handshape moving', confidence: 95, category: 'education' },
+
+            // Work and Jobs
+            'work': { emoji: '💼', name: 'ASL Work', description: 'ASL sign for work - W handshape on other hand', confidence: 95, category: 'work' },
+            'job': { emoji: '💼', name: 'ASL Job', description: 'ASL sign for job - J handshape on chest', confidence: 94, category: 'work' },
+            'money': { emoji: '💰', name: 'ASL Money', description: 'ASL sign for money - M handshape rubbing', confidence: 95, category: 'work' },
+            'buy': { emoji: '🛒', name: 'ASL Buy', description: 'ASL sign for buy - B handshape moving', confidence: 94, category: 'work' },
+            'sell': { emoji: '🏪', name: 'ASL Sell', description: 'ASL sign for sell - S handshape moving', confidence: 94, category: 'work' },
+
+            // Transportation
+            'car': { emoji: '🚗', name: 'ASL Car', description: 'ASL sign for car - C handshape steering', confidence: 95, category: 'transportation' },
+            'bus': { emoji: '🚌', name: 'ASL Bus', description: 'ASL sign for bus - B handshape moving', confidence: 94, category: 'transportation' },
+            'train': { emoji: '🚂', name: 'ASL Train', description: 'ASL sign for train - T handshape moving', confidence: 94, category: 'transportation' },
+            'airplane': { emoji: '✈️', name: 'ASL Airplane', description: 'ASL sign for airplane - A handshape flying', confidence: 95, category: 'transportation' },
+            'drive': { emoji: '🚗', name: 'ASL Drive', description: 'ASL sign for drive - D handshape steering', confidence: 94, category: 'transportation' },
+            'walk': { emoji: '🚶', name: 'ASL Walk', description: 'ASL sign for walk - W handshape moving', confidence: 95, category: 'transportation' },
+            'run': { emoji: '🏃', name: 'ASL Run', description: 'ASL sign for run - R handshape moving', confidence: 95, category: 'transportation' },
+
+            // Weather
+            'sun': { emoji: '☀️', name: 'ASL Sun', description: 'ASL sign for sun - S handshape in circle', confidence: 94, category: 'weather' },
+            'rain': { emoji: '🌧️', name: 'ASL Rain', description: 'ASL sign for rain - R handshape falling', confidence: 94, category: 'weather' },
+            'snow': { emoji: '❄️', name: 'ASL Snow', description: 'ASL sign for snow - S handshape falling', confidence: 94, category: 'weather' },
+            'hot': { emoji: '🔥', name: 'ASL Hot', description: 'ASL sign for hot - H handshape on forehead', confidence: 94, category: 'weather' },
+            'cold': { emoji: '❄️', name: 'ASL Cold', description: 'ASL sign for cold - C handshape shaking', confidence: 94, category: 'weather' },
+            'warm': { emoji: '🌡️', name: 'ASL Warm', description: 'ASL sign for warm - W handshape on chest', confidence: 93, category: 'weather' },
+
+            // Body Parts
+            'head': { emoji: '👤', name: 'ASL Head', description: 'ASL sign for head - H handshape on head', confidence: 96, category: 'body' },
+            'eye': { emoji: '👁️', name: 'ASL Eye', description: 'ASL sign for eye - E handshape on eye', confidence: 95, category: 'body' },
+            'ear': { emoji: '👂', name: 'ASL Ear', description: 'ASL sign for ear - E handshape on ear', confidence: 95, category: 'body' },
+            'nose': { emoji: '👃', name: 'ASL Nose', description: 'ASL sign for nose - N handshape on nose', confidence: 95, category: 'body' },
+            'mouth': { emoji: '👄', name: 'ASL Mouth', description: 'ASL sign for mouth - M handshape on mouth', confidence: 95, category: 'body' },
+            'hand': { emoji: '✋', name: 'ASL Hand', description: 'ASL sign for hand - H handshape on hand', confidence: 96, category: 'body' },
+            'foot': { emoji: '🦶', name: 'ASL Foot', description: 'ASL sign for foot - F handshape on foot', confidence: 95, category: 'body' },
+            'arm': { emoji: '💪', name: 'ASL Arm', description: 'ASL sign for arm - A handshape on arm', confidence: 95, category: 'body' },
+            'leg': { emoji: '🦵', name: 'ASL Leg', description: 'ASL sign for leg - L handshape on leg', confidence: 95, category: 'body' },
+
+            // Advanced Communication
+            'understand': { emoji: '🧠', name: 'ASL Understand', description: 'ASL sign for understand - Index finger on forehead', confidence: 95, category: 'communication' },
+            'know': { emoji: '🧠', name: 'ASL Know', description: 'ASL sign for know - K handshape on forehead', confidence: 95, category: 'communication' },
+            'think': { emoji: '🤔', name: 'ASL Think', description: 'ASL sign for think - Index finger on temple', confidence: 94, category: 'communication' },
+            'remember': { emoji: '🧠', name: 'ASL Remember', description: 'ASL sign for remember - R handshape on forehead', confidence: 94, category: 'communication' },
+            'forget': { emoji: '🧠', name: 'ASL Forget', description: 'ASL sign for forget - F handshape on forehead', confidence: 94, category: 'communication' },
+            'believe': { emoji: '🤝', name: 'ASL Believe', description: 'ASL sign for believe - B handshape on chest', confidence: 93, category: 'communication' },
+            'doubt': { emoji: '🤔', name: 'ASL Doubt', description: 'ASL sign for doubt - D handshape on forehead', confidence: 93, category: 'communication' },
+
+            // Advanced Actions
+            'create': { emoji: '✨', name: 'ASL Create', description: 'ASL sign for create - C handshape moving', confidence: 93, category: 'actions' },
+            'build': { emoji: '🏗️', name: 'ASL Build', description: 'ASL sign for build - B handshape stacking', confidence: 93, category: 'actions' },
+            'fix': { emoji: '🔧', name: 'ASL Fix', description: 'ASL sign for fix - F handshape twisting', confidence: 93, category: 'actions' },
+            'break': { emoji: '💥', name: 'ASL Break', description: 'ASL sign for break - B handshape snapping', confidence: 93, category: 'actions' },
+            'open': { emoji: '🚪', name: 'ASL Open', description: 'ASL sign for open - O handshape opening', confidence: 95, category: 'actions' },
+            'close': { emoji: '🚪', name: 'ASL Close', description: 'ASL sign for close - C handshape closing', confidence: 95, category: 'actions' },
+            'start': { emoji: '▶️', name: 'ASL Start', description: 'ASL sign for start - S handshape moving', confidence: 94, category: 'actions' },
+            'stop': { emoji: '⏹️', name: 'ASL Stop', description: 'ASL sign for stop - S handshape blocking', confidence: 94, category: 'actions' },
+            'finish': { emoji: '✅', name: 'ASL Finish', description: 'ASL sign for finish - F handshape moving', confidence: 94, category: 'actions' },
+            'continue': { emoji: '➡️', name: 'ASL Continue', description: 'ASL sign for continue - C handshape moving', confidence: 93, category: 'actions' },
+
+            // Advanced Social
+            'friend': { emoji: '👥', name: 'ASL Friend', description: 'ASL sign for friend - F handshape on chest', confidence: 95, category: 'social' },
+            'enemy': { emoji: '👤', name: 'ASL Enemy', description: 'ASL sign for enemy - E handshape pointing', confidence: 93, category: 'social' },
+            'neighbor': { emoji: '🏠', name: 'ASL Neighbor', description: 'ASL sign for neighbor - N handshape moving', confidence: 92, category: 'social' },
+            'stranger': { emoji: '👤', name: 'ASL Stranger', description: 'ASL sign for stranger - S handshape pointing', confidence: 92, category: 'social' },
+            'team': { emoji: '👥', name: 'ASL Team', description: 'ASL sign for team - T handshape on chest', confidence: 93, category: 'social' },
+            'group': { emoji: '👥', name: 'ASL Group', description: 'ASL sign for group - G handshape moving', confidence: 93, category: 'social' },
+            'alone': { emoji: '👤', name: 'ASL Alone', description: 'ASL sign for alone - A handshape on chest', confidence: 92, category: 'social' },
+            'together': { emoji: '👥', name: 'ASL Together', description: 'ASL sign for together - T handshape joining', confidence: 93, category: 'social' },
+
+            // Advanced Questions
+            'what': { emoji: '❓', name: 'ASL What', description: 'ASL sign for what - W handshape moving', confidence: 96, category: 'questions' },
+            'where': { emoji: '📍', name: 'ASL Where', description: 'ASL sign for where - W handshape pointing', confidence: 96, category: 'questions' },
+            'when': { emoji: '⏰', name: 'ASL When', description: 'ASL sign for when - W handshape on wrist', confidence: 96, category: 'questions' },
+            'why': { emoji: '🤔', name: 'ASL Why', description: 'ASL sign for why - W handshape on forehead', confidence: 96, category: 'questions' },
+            'how': { emoji: '❓', name: 'ASL How', description: 'ASL sign for how - H handshape moving', confidence: 96, category: 'questions' },
+            'who': { emoji: '👤', name: 'ASL Who', description: 'ASL sign for who - W handshape pointing', confidence: 96, category: 'questions' },
+            'which': { emoji: '❓', name: 'ASL Which', description: 'ASL sign for which - W handshape moving', confidence: 95, category: 'questions' },
+
+            // Advanced Descriptions
+            'big': { emoji: '📏', name: 'ASL Big', description: 'ASL sign for big - B handshape expanding', confidence: 95, category: 'descriptions' },
+            'small': { emoji: '📏', name: 'ASL Small', description: 'ASL sign for small - S handshape contracting', confidence: 95, category: 'descriptions' },
+            'tall': { emoji: '📏', name: 'ASL Tall', description: 'ASL sign for tall - T handshape up', confidence: 95, category: 'descriptions' },
+            'short': { emoji: '📏', name: 'ASL Short', description: 'ASL sign for short - S handshape down', confidence: 95, category: 'descriptions' },
+            'long': { emoji: '📏', name: 'ASL Long', description: 'ASL sign for long - L handshape extending', confidence: 95, category: 'descriptions' },
+            'wide': { emoji: '📏', name: 'ASL Wide', description: 'ASL sign for wide - W handshape spreading', confidence: 94, category: 'descriptions' },
+            'narrow': { emoji: '📏', name: 'ASL Narrow', description: 'ASL sign for narrow - N handshape contracting', confidence: 94, category: 'descriptions' },
+            'heavy': { emoji: '⚖️', name: 'ASL Heavy', description: 'ASL sign for heavy - H handshape dropping', confidence: 94, category: 'descriptions' },
+            'light': { emoji: '💡', name: 'ASL Light', description: 'ASL sign for light - L handshape floating', confidence: 94, category: 'descriptions' },
+            'strong': { emoji: '💪', name: 'ASL Strong', description: 'ASL sign for strong - S handshape flexing', confidence: 94, category: 'descriptions' },
+            'weak': { emoji: '💪', name: 'ASL Weak', description: 'ASL sign for weak - W handshape drooping', confidence: 94, category: 'descriptions' },
+
+            // Advanced Locations
+            'here': { emoji: '📍', name: 'ASL Here', description: 'ASL sign for here - H handshape pointing down', confidence: 96, category: 'locations' },
+            'there': { emoji: '📍', name: 'ASL There', description: 'ASL sign for there - T handshape pointing', confidence: 96, category: 'locations' },
+            'inside': { emoji: '🏠', name: 'ASL Inside', description: 'ASL sign for inside - I handshape entering', confidence: 95, category: 'locations' },
+            'outside': { emoji: '🌳', name: 'ASL Outside', description: 'ASL sign for outside - O handshape exiting', confidence: 95, category: 'locations' },
+            'upstairs': { emoji: '🏠', name: 'ASL Upstairs', description: 'ASL sign for upstairs - U handshape up', confidence: 94, category: 'locations' },
+            'downstairs': { emoji: '🏠', name: 'ASL Downstairs', description: 'ASL sign for downstairs - D handshape down', confidence: 94, category: 'locations' },
+            'north': { emoji: '🧭', name: 'ASL North', description: 'ASL sign for north - N handshape pointing up', confidence: 93, category: 'locations' },
+            'south': { emoji: '🧭', name: 'ASL South', description: 'ASL sign for south - S handshape pointing down', confidence: 93, category: 'locations' },
+            'east': { emoji: '🧭', name: 'ASL East', description: 'ASL sign for east - E handshape pointing right', confidence: 93, category: 'locations' },
+            'west': { emoji: '🧭', name: 'ASL West', description: 'ASL sign for west - W handshape pointing left', confidence: 93, category: 'locations' },
+            
+            // ASL Finger Spelling Alphabet
+            'a': { emoji: '✊', name: 'ASL Letter A', description: 'ASL finger spelling for letter A - Fist', confidence: 98, category: 'alphabet' },
+            'b': { emoji: '✋', name: 'ASL Letter B', description: 'ASL finger spelling for letter B - Open palm', confidence: 98, category: 'alphabet' },
+            'c': { emoji: '🤲', name: 'ASL Letter C', description: 'ASL finger spelling for letter C - Curved hand', confidence: 98, category: 'alphabet' },
+            'd': { emoji: '👉', name: 'ASL Letter D', description: 'ASL finger spelling for letter D - Pointing hand', confidence: 98, category: 'alphabet' },
+            'e': { emoji: '✊', name: 'ASL Letter E', description: 'ASL finger spelling for letter E - Closed fist', confidence: 98, category: 'alphabet' },
+            'f': { emoji: '👌', name: 'ASL Letter F', description: 'ASL finger spelling for letter F - OK sign', confidence: 98, category: 'alphabet' },
+            'g': { emoji: '👉', name: 'ASL Letter G', description: 'ASL finger spelling for letter G - Side pointing', confidence: 98, category: 'alphabet' },
+            'h': { emoji: '✌️', name: 'ASL Letter H', description: 'ASL finger spelling for letter H - Two fingers sideways', confidence: 98, category: 'alphabet' },
+            'i': { emoji: '☝️', name: 'ASL Letter I', description: 'ASL finger spelling for letter I - One finger up', confidence: 98, category: 'alphabet' },
+            'j': { emoji: '☝️', name: 'ASL Letter J', description: 'ASL finger spelling for letter J - One finger drawing J motion', confidence: 98, category: 'alphabet' },
+            'k': { emoji: '✌️', name: 'ASL Letter K', description: 'ASL finger spelling for letter K - Peace sign', confidence: 98, category: 'alphabet' },
+            'l': { emoji: '🤙', name: 'ASL Letter L', description: 'ASL finger spelling for letter L - L-shape with thumb and finger', confidence: 98, category: 'alphabet' },
+            'm': { emoji: '✊', name: 'ASL Letter M', description: 'ASL finger spelling for letter M - Fist with 3 fingers inside', confidence: 98, category: 'alphabet' },
+            'n': { emoji: '✊', name: 'ASL Letter N', description: 'ASL finger spelling for letter N - Fist with 2 fingers inside', confidence: 98, category: 'alphabet' },
+            'o': { emoji: '👌', name: 'ASL Letter O', description: 'ASL finger spelling for letter O - Circular shape', confidence: 98, category: 'alphabet' },
+            'p': { emoji: '👇', name: 'ASL Letter P', description: 'ASL finger spelling for letter P - Point down', confidence: 98, category: 'alphabet' },
+            'q': { emoji: '👇', name: 'ASL Letter Q', description: 'ASL finger spelling for letter Q - Point down', confidence: 98, category: 'alphabet' },
+            'r': { emoji: '🤞', name: 'ASL Letter R', description: 'ASL finger spelling for letter R - Fingers crossed', confidence: 98, category: 'alphabet' },
+            's': { emoji: '✊', name: 'ASL Letter S', description: 'ASL finger spelling for letter S - Fist', confidence: 98, category: 'alphabet' },
+            't': { emoji: '✊', name: 'ASL Letter T', description: 'ASL finger spelling for letter T - Closed fist with thumb in', confidence: 98, category: 'alphabet' },
+            'u': { emoji: '✌️', name: 'ASL Letter U', description: 'ASL finger spelling for letter U - Two fingers up', confidence: 98, category: 'alphabet' },
+            'v': { emoji: '✌️', name: 'ASL Letter V', description: 'ASL finger spelling for letter V - Victory sign', confidence: 98, category: 'alphabet' },
+            'w': { emoji: '🖖', name: 'ASL Letter W', description: 'ASL finger spelling for letter W - Three fingers up', confidence: 98, category: 'alphabet' },
+            'x': { emoji: '☝️', name: 'ASL Letter X', description: 'ASL finger spelling for letter X - Index bent', confidence: 98, category: 'alphabet' },
+            'y': { emoji: '🤙', name: 'ASL Letter Y', description: 'ASL finger spelling for letter Y - Shaka sign (thumb + pinky)', confidence: 98, category: 'alphabet' },
+            'z': { emoji: '✍️', name: 'ASL Letter Z', description: 'ASL finger spelling for letter Z - Finger drawing Z motion', confidence: 98, category: 'alphabet' },
+            
+            // ASL Numbers
+            '0': { emoji: '👌', name: 'ASL Number 0', description: 'ASL sign for number 0', confidence: 98, category: 'numbers' },
+            '1': { emoji: '☝️', name: 'ASL Number 1', description: 'ASL sign for number 1', confidence: 98, category: 'numbers' },
+            '2': { emoji: '✌️', name: 'ASL Number 2', description: 'ASL sign for number 2', confidence: 98, category: 'numbers' },
+            '3': { emoji: '🤟', name: 'ASL Number 3', description: 'ASL sign for number 3', confidence: 98, category: 'numbers' },
+            '4': { emoji: '✋', name: 'ASL Number 4', description: 'ASL sign for number 4 - all fingers up', confidence: 98, category: 'numbers' },
+            '5': { emoji: '🖐️', name: 'ASL Number 5', description: 'ASL sign for number 5', confidence: 98, category: 'numbers' },
+            '6': { emoji: '🤙', name: 'ASL Number 6', description: 'ASL sign for number 6', confidence: 98, category: 'numbers' },
+            '7': { emoji: '👍', name: 'ASL Number 7', description: 'ASL sign for number 7', confidence: 98, category: 'numbers' },
+            '8': { emoji: '🤞', name: 'ASL Number 8', description: 'ASL sign for number 8', confidence: 98, category: 'numbers' },
+            '9': { emoji: '👆', name: 'ASL Number 9', description: 'ASL sign for number 9', confidence: 98, category: 'numbers' }
+        };
+
+        // Enhanced gesture database with sign language support
+        const signLanguageDatabase = {
+            asl: {
+                'hello': { emoji: '👋', name: 'ASL Hello', description: 'American Sign Language greeting', confidence: 95, category: 'greetings' },
+                'thank you': { emoji: '🙏', name: 'ASL Thank You', description: 'ASL sign for gratitude', confidence: 97, category: 'expressions' },
+                'please': { emoji: '🙏', name: 'ASL Please', description: 'ASL sign for polite request', confidence: 93, category: 'expressions' },
+                'sorry': { emoji: '😔', name: 'ASL Sorry', description: 'ASL sign for apology', confidence: 91, category: 'expressions' },
+                'yes': { emoji: '👍', name: 'ASL Yes', description: 'ASL affirmative sign', confidence: 96, category: 'actions' },
+                'no': { emoji: '👎', name: 'ASL No', description: 'ASL negative sign', confidence: 94, category: 'actions' },
+                'help': { emoji: '🙋‍♂️', name: 'ASL Help', description: 'ASL sign for assistance', confidence: 94, category: 'expressions' },
+                'love': { emoji: '❤️', name: 'ASL Love', description: 'ASL sign for love', confidence: 96, category: 'emotions' },
+                'goodbye': { emoji: '👋', name: 'ASL Goodbye', description: 'ASL farewell sign', confidence: 92, category: 'greetings' },
+                'how': { emoji: '❓', name: 'ASL How', description: 'ASL sign for how', confidence: 95, category: 'questions' },
+                'are': { emoji: '👋', name: 'ASL Are', description: 'ASL sign for are', confidence: 95, category: 'questions' },
+                'you': { emoji: '👉', name: 'ASL You', description: 'ASL sign for you', confidence: 95, category: 'pronouns' },
+                'how are you': { emoji: '❓ 👋 👉', name: 'ASL How Are You', description: 'ASL sign for asking how someone is doing', confidence: 98, category: 'questions' },
+                'good morning': { emoji: '🌅', name: 'ASL Good Morning', description: 'ASL morning greeting', confidence: 94, category: 'greetings' },
+                'good night': { emoji: '🌙', name: 'ASL Good Night', description: 'ASL night farewell', confidence: 93, category: 'greetings' }
+            },
+            bsl: {
+                'hello': { emoji: '👋', name: 'BSL Hello', description: 'British Sign Language greeting', confidence: 95, category: 'greetings' },
+                'thank you': { emoji: '🙏', name: 'BSL Thank You', description: 'BSL sign for gratitude', confidence: 97, category: 'expressions' },
+                'please': { emoji: '🙏', name: 'BSL Please', description: 'BSL sign for polite request', confidence: 93, category: 'expressions' },
+                'sorry': { emoji: '😔', name: 'BSL Sorry', description: 'BSL sign for apology', confidence: 91, category: 'expressions' },
+                'yes': { emoji: '👍', name: 'BSL Yes', description: 'BSL affirmative sign', confidence: 96, category: 'actions' },
+                'no': { emoji: '👎', name: 'BSL No', description: 'BSL negative sign', confidence: 94, category: 'actions' },
+                'help': { emoji: '🙋‍♂️', name: 'BSL Help', description: 'BSL sign for assistance', confidence: 94, category: 'expressions' },
+                'love': { emoji: '❤️', name: 'BSL Love', description: 'BSL sign for love', confidence: 96, category: 'emotions' },
+                'goodbye': { emoji: '👋', name: 'BSL Goodbye', description: 'BSL farewell sign', confidence: 92, category: 'greetings' }
+            },
+            isl: {
+                'hello': { emoji: '👋', name: 'ISL Hello', description: 'Indian Sign Language greeting', confidence: 95, category: 'greetings' },
+                'thank you': { emoji: '🙏', name: 'ISL Thank You', description: 'ISL sign for gratitude', confidence: 97, category: 'expressions' },
+                'please': { emoji: '🙏', name: 'ISL Please', description: 'ISL sign for polite request', confidence: 93, category: 'expressions' },
+                'namaste': { emoji: '🙏', name: 'ISL Namaste', description: 'Traditional Indian greeting sign', confidence: 98, category: 'greetings' },
+                'yes': { emoji: '👍', name: 'ISL Yes', description: 'ISL affirmative sign', confidence: 96, category: 'actions' },
+                'no': { emoji: '👎', name: 'ISL No', description: 'ISL negative sign', confidence: 94, category: 'actions' },
+                'help': { emoji: '🙋‍♂️', name: 'ISL Help', description: 'ISL sign for assistance', confidence: 94, category: 'expressions' },
+                'love': { emoji: '❤️', name: 'ISL Love', description: 'ISL sign for love', confidence: 96, category: 'emotions' }
+            },
+            jsl: {
+                'hello': { emoji: '👋', name: 'JSL Hello', description: 'Japanese Sign Language greeting', confidence: 95, category: 'greetings' },
+                'thank you': { emoji: '🙏', name: 'JSL Thank You', description: 'JSL sign for gratitude', confidence: 97, category: 'expressions' },
+                'please': { emoji: '🙏', name: 'JSL Please', description: 'JSL sign for polite request', confidence: 93, category: 'expressions' },
+                'sorry': { emoji: '😔', name: 'JSL Sorry', description: 'JSL sign for apology', confidence: 91, category: 'expressions' },
+                'yes': { emoji: '👍', name: 'JSL Yes', description: 'JSL affirmative sign', confidence: 96, category: 'actions' },
+                'no': { emoji: '👎', name: 'JSL No', description: 'JSL negative sign', confidence: 94, category: 'actions' },
+                'help': { emoji: '🙋‍♂️', name: 'JSL Help', description: 'JSL sign for assistance', confidence: 94, category: 'expressions' },
+                'love': { emoji: '❤️', name: 'JSL Love', description: 'JSL sign for love', confidence: 96, category: 'emotions' }
+            },
+            ksl: {
+                'hello': { emoji: '👋', name: 'KSL Hello', description: 'Korean Sign Language greeting', confidence: 95, category: 'greetings' },
+                'thank you': { emoji: '🙏', name: 'KSL Thank You', description: 'KSL sign for gratitude', confidence: 97, category: 'expressions' },
+                'please': { emoji: '🙏', name: 'KSL Please', description: 'KSL sign for polite request', confidence: 93, category: 'expressions' },
+                'sorry': { emoji: '😔', name: 'KSL Sorry', description: 'KSL sign for apology', confidence: 91, category: 'expressions' },
+                'yes': { emoji: '👍', name: 'KSL Yes', description: 'KSL affirmative sign', confidence: 96, category: 'actions' },
+                'no': { emoji: '👎', name: 'KSL No', description: 'KSL negative sign', confidence: 94, category: 'actions' },
+                'help': { emoji: '🙋‍♂️', name: 'KSL Help', description: 'KSL sign for assistance', confidence: 94, category: 'expressions' },
+                'love': { emoji: '❤️', name: 'KSL Love', description: 'KSL sign for love', confidence: 96, category: 'emotions' }
+            }
+        };
+        
+        
+        
+
+
+
+
+        // DOM Elements
+        const textInput = document.getElementById('textInput');
+        const processTextBtn = document.getElementById('processTextBtn');
+        const recordBtn = document.getElementById('recordBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+        const gestureDisplay = document.getElementById('gestureDisplay');
+        const historyList = document.getElementById('historyList');
+        const statusDisplay = document.getElementById('statusDisplay');
+        const audioVisualization = document.getElementById('audioVisualization');
+        const transcriptionDisplay = document.getElementById('transcriptionDisplay');
+        const transcriptionText = document.getElementById('transcriptionText');
+
+        let ttsVoices = [];
+        let currentUtterance = null;
+        let speechSynthesisRef = window.speechSynthesis;
+
+        function loadVoices() {
+            ttsVoices = speechSynthesisRef.getVoices();
+            if (!voiceSelect) return;
+            voiceSelect.innerHTML = '';
+            if (ttsVoices.length === 0) {
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.textContent = 'No voices available';
+                voiceSelect.appendChild(opt);
+                return;
+            }
+            const def = document.createElement('option');
+            def.value = '';
+            def.textContent = 'Select a voice...';
+            voiceSelect.appendChild(def);
+            ttsVoices.forEach((v, i) => {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = `${v.name} (${v.lang})`;
+                voiceSelect.appendChild(opt);
+            });
+        }
+
+        function speakText() {
+            if (!ttsText) return;
+            const text = ttsText.value.trim();
+            if (!text) {
+                showTTSStatus('Please enter text to speak', 'error');
+                return;
+            }
+            if (currentUtterance) {
+                speechSynthesisRef.cancel();
+            }
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            const idx = voiceSelect ? voiceSelect.value : '';
+            if (idx !== '' && ttsVoices[idx]) {
+                currentUtterance.voice = ttsVoices[idx];
+            }
+            const rate = speedSelect ? parseFloat(speedSelect.value) : 1;
+            currentUtterance.rate = rate;
+            currentUtterance.pitch = 1;
+            currentUtterance.volume = 1;
+            currentUtterance.onstart = () => {
+                showTTSStatus('Speaking...', 'success');
+                if (speakBtn) speakBtn.disabled = true;
+                if (pauseBtn) pauseBtn.disabled = false;
+                if (stopSpeakBtn) stopSpeakBtn.disabled = false;
+            };
+            currentUtterance.onend = () => {
+                showTTSStatus('Finished speaking', 'success');
+                resetTTSControls();
+            };
+            currentUtterance.onerror = (e) => {
+                showTTSStatus('Error: ' + e.error, 'error');
+                resetTTSControls();
+            };
+            speechSynthesisRef.speak(currentUtterance);
+        }
+
+        function pauseSpeech() {
+            if (speechSynthesisRef.speaking) {
+                speechSynthesisRef.pause();
+                showTTSStatus('Paused', 'processing');
+                if (pauseBtn) pauseBtn.textContent = '▶️ Resume';
+            }
+        }
+
+        function resumeSpeech() {
+            if (speechSynthesisRef.paused) {
+                speechSynthesisRef.resume();
+                showTTSStatus('Speaking...', 'success');
+                if (pauseBtn) pauseBtn.textContent = '⏸️ Pause';
+            }
+        }
+
+        function stopSpeech() {
+            speechSynthesisRef.cancel();
+            showTTSStatus('Stopped', 'error');
+            resetTTSControls();
+        }
+
+        function resetTTSControls() {
+            if (speakBtn) speakBtn.disabled = false;
+            if (pauseBtn) {
+                pauseBtn.disabled = true;
+                pauseBtn.textContent = '⏸️ Pause';
+            }
+            if (stopSpeakBtn) stopSpeakBtn.disabled = true;
+            currentUtterance = null;
+        }
+
+        function showTTSStatus(message, type) {
+            if (!ttsStatus) return;
+            ttsStatus.textContent = message;
+            ttsStatus.className = `status ${type} animate-fadeIn`;
+            ttsStatus.style.display = 'block';
+        }
+        const ttsText = document.getElementById('ttsText');
+        const voiceSelect = document.getElementById('voiceSelect');
+        const speedSelect = document.getElementById('speedSelect');
+        const speakBtn = document.getElementById('speakBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const stopSpeakBtn = document.getElementById('stopSpeakBtn');
+        const ttsStatus = document.getElementById('ttsStatus');
+        
+        
+
+
+
+        
+        // ASL Finger Spelling Function - Enhanced with special character handling and pronunciation guide
+        function fingerSpell(text) {
+            const letters = text.toLowerCase().split('');
+            const spelledWord = letters.map(letter => {
+                if (advancedASLDatabase[letter]) {
+                    return advancedASLDatabase[letter];
+                }
+                // Handle numbers and special characters
+                else if (/[0-9]/.test(letter)) {
+                    // Return number sign followed by the number
+                    return {
+                        emoji: '🔢',
+                        name: `ASL Number ${letter}`,
+                        description: `Number sign followed by ${letter}`,
+                        confidence: 90,
+                        category: 'numbers'
+                    };
+                }
+                else if (letter === ' ') {
+                    // Handle spaces with a pause indicator
+                    return {
+                        emoji: '⏸️',
+                        name: 'ASL Space',
+                        description: 'Brief pause between words',
+                        confidence: 100,
+                        category: 'spacing'
+                    };
+                }
+                return null;
+            }).filter(gesture => gesture !== null);
+
+            if (spelledWord.length > 0) {
+                // Calculate pronunciation difficulty based on letter combinations and consonant clusters
+                let difficultyScore = 0;
+                
+                // Length-based difficulty
+                if (text.length > 3 && text.length <= 6) {
+                    difficultyScore += 1;
+                } else if (text.length > 6) {
+                    difficultyScore += 2;
+                }
+                
+                // Check for consonant clusters
+                const consonants = 'bcdfghjklmnpqrstvwxyz';
+                for (let i = 0; i < text.length - 1; i++) {
+                    if (consonants.includes(text[i].toLowerCase()) && 
+                        consonants.includes(text[i+1].toLowerCase())) {
+                        difficultyScore += 1;
+                        // Check for triple consonant cluster
+                        if (i < text.length - 2 && consonants.includes(text[i+2].toLowerCase())) {
+                            difficultyScore += 1;
+                        }
+                    }
+                }
+                
+                // Determine difficulty level
+                let difficulty = 'Easy';
+                if (difficultyScore >= 3) {
+                    difficulty = 'Advanced';
+                } else if (difficultyScore >= 1) {
+                    difficulty = 'Medium';
+                }
+                
+                return {
+                    emoji: '🤟',
+                    name: `ASL Finger Spelling: ${text.toUpperCase()}`,
+                    description: `Spelling: ${text.toUpperCase()}`,
+                    difficulty: difficulty,
+                    confidence: 95,
+                    category: 'fingerspelling',
+                    letters: spelledWord,
+                    letterCount: spelledWord.length
+                };
+            }
+            return null;
+        }
+
+        // ASL Hand Tracking Simulation
+        function simulateHandTracking() {
+            const handPositions = [
+                { x: 100, y: 200, gesture: 'open_palm' },
+                { x: 150, y: 180, gesture: 'pointing' },
+                { x: 200, y: 160, gesture: 'fist' },
+                { x: 250, y: 140, gesture: 'thumbs_up' },
+                { x: 300, y: 120, gesture: 'peace_sign' }
+            ];
+
+            return handPositions[Math.floor(Math.random() * handPositions.length)];
+        }
+
+        // Enhanced ASL Detection with Advanced Features
+        function detectAdvancedASL(text) {
+            const inputText = text.toLowerCase().trim();
+            
+            // Check for finger spelling first
+            if (inputText.length <= 5 && /^[a-z]+$/.test(inputText)) {
+                const fingerSpelled = fingerSpell(inputText);
+                if (fingerSpelled) {
+                    return fingerSpelled;
+                }
+            }
+
+            // Check advanced ASL database
+            if (advancedASLDatabase[inputText]) {
+                return advancedASLDatabase[inputText];
+            }
+
+            // Check for partial matches in advanced ASL
+            for (const key in advancedASLDatabase) {
+                if (inputText.includes(key) || key.includes(inputText)) {
+                    const gesture = {...advancedASLDatabase[key]};
+                    gesture.confidence = Math.max(70, gesture.confidence - 15);
+                    return gesture;
+                }
+            }
+
+            // Check original ASL database
+            if (signLanguageDatabase.asl && signLanguageDatabase.asl[inputText]) {
+                return signLanguageDatabase.asl[inputText];
+            }
+
+            // Check original gesture database
+            if (gestureDatabase[inputText]) {
+                return gestureDatabase[inputText];
+            }
+
+            // No match found
+            return {
+                emoji: '',
+                name: 'Unknown ASL Sign',
+                description: 'Could not detect an ASL sign for this input. Try finger spelling individual letters.',
+                confidence: 10,
+                category: 'unknown'
+            };
+        }
+
+        // ASL Practice Mode
+        function startASLPractice() {
+            const practiceWords = [
+                'hello', 'thank you', 'please', 'sorry', 'yes', 'no',
+                'family', 'mother', 'father', 'sister', 'brother',
+                'one', 'two', 'three', 'four', 'five',
+                'red', 'blue', 'green', 'yellow',
+                'eat', 'drink', 'hungry', 'thirsty',
+                'learn', 'teach', 'school', 'student',
+                'work', 'job', 'money', 'buy',
+                'car', 'bus', 'train', 'airplane',
+                'sun', 'rain', 'snow', 'hot', 'cold',
+                'head', 'eye', 'ear', 'nose', 'mouth',
+                'understand', 'know', 'think', 'remember',
+                'create', 'build', 'fix', 'break',
+                'friend', 'enemy', 'neighbor', 'stranger',
+                'what', 'where', 'when', 'why', 'how', 'who',
+                'big', 'small', 'tall', 'short', 'long',
+                'here', 'there', 'inside', 'outside'
+            ];
+
+            const randomWord = practiceWords[Math.floor(Math.random() * practiceWords.length)];
+            const gesture = detectAdvancedASL(randomWord);
+            
+            displayGesture(gesture, randomWord);
+            speakResponse(`Practice the ASL sign for: ${randomWord}`);
+            
+            return { word: randomWord, gesture: gesture };
+        }
+
+        // ASL Quiz Mode
+        function startASLQuiz() {
+            const quizQuestions = [
+                {
+                    question: "What is the ASL sign for 'family'?",
+                    options: ["F handshape moving in circle", "F handshape on chest", "F handshape pointing", "F handshape on head"],
+                    correct: 0,
+                    word: "family"
+                },
+                {
+                    question: "What is the ASL sign for 'learn'?",
+                    options: ["L handshape on forehead", "L handshape on chest", "L handshape moving", "L handshape pointing"],
+                    correct: 0,
+                    word: "learn"
+                },
+                {
+                    question: "What is the ASL sign for 'money'?",
+                    options: ["M handshape rubbing", "M handshape on chest", "M handshape pointing", "M handshape moving"],
+                    correct: 0,
+                    word: "money"
+                },
+                {
+                    question: "What is the ASL sign for 'understand'?",
+                    options: ["Index finger on forehead", "Index finger on temple", "Index finger on chin", "Index finger pointing"],
+                    correct: 0,
+                    word: "understand"
+                },
+                {
+                    question: "What is the ASL sign for 'friend'?",
+                    options: ["F handshape on chest", "F handshape moving", "F handshape pointing", "F handshape on head"],
+                    correct: 0,
+                    word: "friend"
+                }
+            ];
+
+            const randomQuestion = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
+            
+            // Display quiz question
+            const quizDisplay = document.createElement('div');
+            quizDisplay.innerHTML = `
+                <div style="background: white; padding: 20px; border-radius: 15px; margin: 20px 0;" class="animate-slideInUp">
+                    <h3 style="margin-bottom: 15px; color: #333;" class="animate-fadeIn">ASL Quiz</h3>
+                    <p style="margin-bottom: 15px; font-weight: 600;" class="animate-fadeIn delay-100">${randomQuestion.question}</p>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        ${randomQuestion.options.map((option, index) => `
+                            <button class="btn btn-secondary quiz-option" data-correct="${index === randomQuestion.correct}" style="text-align: left;">
+                                ${String.fromCharCode(65 + index)}. ${option}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            // Add event listeners for quiz options
+            setTimeout(() => {
+                quizDisplay.querySelectorAll('.quiz-option').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const isCorrect = e.target.dataset.correct === 'true';
+                        
+                        // Add wiggle animation to the clicked button
+                        e.target.classList.add('animate-wiggle');
+                        
+                        if (isCorrect) {
+                            e.target.style.background = 'linear-gradient(45deg, #28a745, #20c997)';
+                            e.target.style.color = 'white';
+                            e.target.classList.add('animate-pulse');
+                            speakResponse('Correct! Well done!');
+                        } else {
+                            e.target.style.background = '#dc3545';
+                            e.target.style.color = 'white';
+                            speakResponse('Incorrect. Try again!');
+                        }
+                        
+                        // Disable all buttons to prevent multiple selections
+                        quizDisplay.querySelectorAll('.quiz-option').forEach(option => {
+                            option.disabled = true;
+                        });
+                        
+                        // Show correct answer with animation
+                        setTimeout(() => {
+                            const correctBtn = quizDisplay.querySelector('[data-correct="true"]');
+                            correctBtn.style.background = 'linear-gradient(45deg, #28a745, #20c997)';
+                            correctBtn.style.color = 'white';
+                            correctBtn.classList.add('animate-pulse');
+                            
+                            // Remove wiggle from incorrect button after showing correct answer
+                            if (!isCorrect) {
+                                e.target.classList.remove('animate-wiggle');
+                            }
+                        }, 1000);
+                    });
+                });
+            }, 100);
+
+            return { question: randomQuestion, display: quizDisplay };
+        }
+
+        // Enhanced gesture detection function with sign language support
+        function detectGesture(text) {
+            const inputText = text.toLowerCase().trim();
+           
+            // Check for complete phrases first
+            if (gestureDatabase[inputText]) {
+                return gestureDatabase[inputText];
+            }
+           
+            // Check advanced ASL database first
+            if (advancedASLDatabase[inputText]) {
+                return advancedASLDatabase[inputText];
+            }
+           
+            // Check selected sign language database
+            if (signLanguageDatabase[selectedSignLanguage] && signLanguageDatabase[selectedSignLanguage][inputText]) {
+                return signLanguageDatabase[selectedSignLanguage][inputText];
+            }
+           
+            // Check all sign language databases
+            for (const lang in signLanguageDatabase) {
+                if (signLanguageDatabase[lang][inputText]) {
+                    const gesture = {...signLanguageDatabase[lang][inputText]};
+                    gesture.confidence = Math.max(60, gesture.confidence - 10); // Slight reduction for cross-language
+                    return gesture;
+                }
+            }
+           
+            // Partial match across all databases
+            for (const lang in signLanguageDatabase) {
+                for (const key in signLanguageDatabase[lang]) {
+                    if (inputText.includes(key) || key.includes(inputText)) {
+                        const gesture = {...signLanguageDatabase[lang][key]};
+                        gesture.confidence = Math.max(50, gesture.confidence - 25);
+                        return gesture;
+                    }
+                }
+            }
+           
+            // Partial match in original database
+            for (const key in gestureDatabase) {
+                if (inputText.includes(key) || key.includes(inputText)) {
+                    const gesture = {...gestureDatabase[key]};
+                    gesture.confidence = Math.max(60, gesture.confidence - 20);
+                    return gesture;
+                }
+            }
+           
+            // No match found
+            return {
+                emoji: '',
+                name: 'Unknown Gesture',
+                description: 'Could not detect a gesture for this input',
+                confidence: 15,
+                category: 'unknown'
+            };
+        }
+        
+        // Function to convert text to ASL emojis - Removed
+        
+        // Function to detect gestures for individual words in a phrase
+        function detectWordGestures(text) {
+            const words = text.toLowerCase().trim().split(/\s+/);
+            const gestures = [];
+            
+            for (const word of words) {
+                const gesture = detectGesture(word);
+                gestures.push({
+                    word: word,
+                    gesture: gesture
+                });
+            }
+            
+            return gestures;
+        }
+
+        // Sign Language Functions
+        
+        // Training Data Management Functions Removed
+        
+        // ChatGPT Integration Functions Removed
+
+        // Convert text to ASL emoji function - Removed
+        
+        // Display gesture function
+        function displayGesture(gesture, inputText) {
+            const avatar = gestureDisplay.querySelector('.gesture-avatar');
+            const name = gestureDisplay.querySelector('.gesture-text');
+            const description = gestureDisplay.querySelector('.gesture-description');
+
+            avatar.textContent = gesture.emoji;
+            if (name) name.textContent = gesture.name;
+            if (description) description.textContent = gesture.description;
+
+            // Add to history
+            addToHistory(gesture, inputText);
+            updateStats(gesture);
+        }
+        
+        // Display word-by-word gestures function
+        function displayWordGestures(wordGestures, inputText) {
+            const avatar = gestureDisplay.querySelector('.gesture-avatar');
+            const name = gestureDisplay.querySelector('.gesture-text');
+            const description = gestureDisplay.querySelector('.gesture-description');
+
+            // Create combined display for multiple words
+            const combinedEmoji = wordGestures.map(wg => wg.gesture.emoji).join(' ');
+            const combinedName = `Word-by-Word: ${wordGestures.map(wg => wg.word).join(' ')}`;
+            const combinedDescription = wordGestures.map(wg => `${wg.word}: ${wg.gesture.name}`).join(' | ');
+            const avgConfidence = Math.round(wordGestures.reduce((sum, wg) => sum + wg.gesture.confidence, 0) / wordGestures.length);
+
+            avatar.textContent = combinedEmoji;
+            if (name) name.textContent = combinedName;
+            if (description) description.textContent = combinedDescription;
+
+            // Add to history
+            const combinedGesture = {
+                emoji: combinedEmoji,
+                name: combinedName,
+                description: combinedDescription,
+                confidence: avgConfidence,
+                category: 'phrase'
+            };
+            addToHistory(combinedGesture, inputText);
+            updateStats(combinedGesture);
+        }
+
+        // Add to history
+        function addToHistory(gesture, inputText) {
+            const historyItem = {
+                gesture,
+                inputText,
+                timestamp: new Date()
+            };
+
+            history.unshift(historyItem);
+            if (history.length > 10) {
+                history.pop();
+            }
+
+            updateHistoryDisplay();
+        }
+
+        // Update history display
+        function updateHistoryDisplay() {
+            if (history.length === 0) {
+                historyList.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No gestures detected yet</p>';
+                return;
+            }
+
+            historyList.innerHTML = history.map(item => `
+                <div class="history-item" data-text="${item.inputText}">
+                    <div class="history-emoji">${item.gesture.emoji}</div>
+                    <div class="history-text">
+                        <div style="font-weight: 600;">${item.gesture.name}</div>
+                        <div style="font-size: 0.9em; color: #666;">"${item.inputText}"</div>
+                    </div>
+                    <div class="history-time">${item.timestamp.toLocaleTimeString()}</div>
+                </div>
+            `).join('');
+        }
+
+        // Update stats
+        function updateStats(gesture) {
+            stats.totalGestures++;
+            stats.totalConfidence += gesture.confidence;
+
+            if (!stats.categoryCount[gesture.category]) {
+                stats.categoryCount[gesture.category] = 0;
+            }
+            stats.categoryCount[gesture.category]++;
+
+            const avgConfidence = Math.round(stats.totalConfidence / stats.totalGestures);
+            const topCategory = Object.keys(stats.categoryCount).reduce((a, b) =>
+                stats.categoryCount[a] > stats.categoryCount[b] ? a : b
+            );
+
+            document.getElementById('totalGestures').textContent = stats.totalGestures;
+            document.getElementById('avgConfidence').textContent = avgConfidence + '%';
+            document.getElementById('topCategory').textContent = topCategory;
+        }
+
+        // Process text function
+        function processText() {
+            if (!textInput) return;
+            const text = textInput.value.trim();
+            if (!text) return;
+
+            // First try to detect as a complete phrase
+            const gesture = detectGesture(text);
+            
+            // If it's an unknown gesture and contains multiple words, try word-by-word detection
+            if (gesture.name === 'Unknown Gesture' && text.includes(' ')) {
+                const wordGestures = detectWordGestures(text);
+                const validGestures = wordGestures.filter(wg => wg.gesture.name !== 'Unknown Gesture');
+                
+                if (validGestures.length > 0) {
+                    displayWordGestures(wordGestures, text);
+                    return;
+                }
+            }
+            
+            displayGesture(gesture, text);
+        }
+
+        // Clear all function
+        function clearAll() {
+            if (textInput) textInput.value = '';
+           
+            // Stop recording if active
+            if (isRecording) {
+                stopRecording();
+            }
+           
+            // Clear status and transcription
+            if (statusDisplay) statusDisplay.innerHTML = '';
+            if (transcriptionDisplay) transcriptionDisplay.style.display = 'none';
+           
+            // Reset display
+            const avatar = gestureDisplay.querySelector('.gesture-avatar');
+            const name = gestureDisplay.querySelector('.gesture-text');
+            const description = gestureDisplay.querySelector('.gesture-description');
+
+            avatar.textContent = '';
+            if (name) name.textContent = '';
+            if (description) description.textContent = '';
+        }
+
+        // Audio recording functions
+        function initializeSpeechRecognition() {
+            if ('webkitSpeechRecognition' in window) {
+                recognition = new webkitSpeechRecognition();
+            } else if ('SpeechRecognition' in window) {
+                recognition = new SpeechRecognition();
+            } else {
+                console.log('Speech recognition not supported');
+                return false;
+            }
+
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+
+            recognition.onstart = function() {
+                showStatus('Recording...', 'recording');
+                if (audioVisualization) audioVisualization.style.display = 'flex';
+            };
+
+            recognition.onresult = function(event) {
+                let finalTranscript = '';
+                let interimTranscript = '';
+
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        finalTranscript += transcript;
+                    } else {
+                        interimTranscript += transcript;
+                    }
+                }
+
+                const displayText = finalTranscript || interimTranscript;
+                if (displayText.trim()) {
+                    transcriptionText.textContent = displayText;
+                    if (transcriptionDisplay) transcriptionDisplay.style.display = 'block';
+                }
+
+                if (finalTranscript.trim()) {
+                    showStatus('Processing speech...', 'processing');
+                    setTimeout(() => {
+                            // Process as regular transcription
+                            processTranscription(finalTranscript);
+                    }, 500);
+                }
+            };
+
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error:', event.error);
+                showStatus('Error: ' + event.error, 'error');
+                resetRecordingState();
+            };
+
+            recognition.onend = function() {
+                resetRecordingState();
+                if (isRecording) {
+                    // Restart if we're still supposed to be recording
+                    recognition.start();
+                }
+            };
+
+            return true;
+        }
+
+        function startRecording() {
+            console.log('Starting recording...');
+            if (!recognition && !initializeSpeechRecognition()) {
+                showStatus('Speech recognition not supported in this browser', 'error');
+                return;
+            }
+
+            isRecording = true;
+            recordBtn.disabled = true;
+            stopBtn.disabled = false;
+           
+            try {
+                recognition.start();
+                console.log('Speech recognition started successfully');
+            } catch (error) {
+                console.error('Error starting speech recognition:', error);
+                showStatus('Failed to start recording', 'error');
+                resetRecordingState();
+            }
+        }
+
+        function stopRecording() {
+            if (recognition && isRecording) {
+                isRecording = false;
+                recognition.stop();
+            }
+            resetRecordingState();
+        }
+
+        function resetRecordingState() {
+            recordBtn.disabled = false;
+            stopBtn.disabled = true;
+            if (audioVisualization) audioVisualization.style.display = 'none';
+           
+            if (!transcriptionDisplay || !transcriptionDisplay.style.display || transcriptionDisplay.style.display === 'none') {
+                if (statusDisplay) statusDisplay.innerHTML = '';
+            }
+        }
+
+        function processTranscription(transcript) {
+            const cleanTranscript = transcript.trim();
+            if (cleanTranscript) {
+                if (textInput) textInput.value = cleanTranscript;
+                const gesture = detectGesture(cleanTranscript);
+                displayGesture(gesture, cleanTranscript);
+                showStatus('Gesture detected successfully!', 'success');
+            }
+        }
+
+        function showStatus(message, type) {
+            if (!statusDisplay) return;
+            statusDisplay.innerHTML = `
+                <div class="status ${type} animate-fadeIn">
+                    ${type === 'processing' ? '<div class="loading"></div>' : ''}
+                    ${message}
+                </div>
+            `;
+            
+            // Add additional animations based on status type
+            const statusElement = statusDisplay.querySelector('.status');
+            
+            if (type === 'success') {
+                // Add pulse animation for success messages
+                statusElement.classList.add('animate-pulse');
+                
+                // Auto-hide success messages after 3 seconds with fade out
+                setTimeout(() => {
+                    statusElement.classList.remove('animate-pulse');
+                    statusElement.classList.add('animate-fadeOut');
+                    setTimeout(() => {
+                        statusDisplay.innerHTML = '';
+                    }, 500); // Wait for fadeOut animation to complete
+                }, 3000);
+            } else if (type === 'error') {
+                // Add wiggle animation for error messages
+                statusElement.classList.add('animate-wiggle');
+                setTimeout(() => {
+                    statusElement.classList.remove('animate-wiggle');
+                }, 500);
+            }
+        }
+
+        // Clear history function
+        function clearHistory() {
+            history = [];
+            updateHistoryDisplay();
+        }
+
+        // Event listeners
+        if (processTextBtn) processTextBtn.addEventListener('click', processText);
+        if (recordBtn) recordBtn.addEventListener('click', startRecording);
+        if (stopBtn) stopBtn.addEventListener('click', stopRecording);
+        if (clearBtn) clearBtn.addEventListener('click', clearAll);
+        
+        // Check if clearHistoryBtn exists before adding event listener
+        if (clearHistoryBtn) {
+            clearHistoryBtn.addEventListener('click', clearHistory);
+        }
+        
+        // Training Data Management and ChatGPT Event Listeners Removed
+
+        // ASL Emoji Converter Event Listener - Removed
+
+        // ASL Practice and Quiz Event Listeners
+        const startPracticeBtnRef = document.getElementById('startPracticeBtn');
+        if (startPracticeBtnRef) startPracticeBtnRef.addEventListener('click', () => {
+            const practice = startASLPractice();
+            
+            // Add animation to the button
+            const btn = document.getElementById('startPracticeBtn');
+            btn.classList.add('animate-wiggle');
+            setTimeout(() => {
+                btn.classList.remove('animate-wiggle');
+            }, 500);
+            
+            document.getElementById('practiceDisplay').classList.remove('animate-fadeIn');
+            document.getElementById('practiceDisplay').offsetWidth; // Force reflow
+            document.getElementById('practiceDisplay').classList.add('animate-fadeIn');
+            
+            document.getElementById('practiceDisplay').style.display = 'block';
+            document.getElementById('practiceDisplay').innerHTML = `
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;" class="animate-slideInUp">
+                    <h4 style="margin-bottom: 10px; color: #333;">Practice Word: <strong class="animate-pulse">${practice.word}</strong></h4>
+                    <p style="color: #666;">${practice.gesture.description}</p>
+                    <div style="margin-top: 10px;">
+                        <button class="btn btn-primary animate-pulse" onclick="speakResponse('${practice.word}')">🔊 Hear Word</button>
+                        <button class="btn btn-secondary" onclick="startASLPractice()">🔄 New Word</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('nextPracticeBtn').disabled = false;
+        });
+
+        const nextPracticeBtnRef = document.getElementById('nextPracticeBtn');
+        if (nextPracticeBtnRef) nextPracticeBtnRef.addEventListener('click', () => {
+            const practice = startASLPractice();
+            
+            // Add animation to the button
+            const btn = document.getElementById('nextPracticeBtn');
+            btn.classList.add('animate-wiggle');
+            setTimeout(() => {
+                btn.classList.remove('animate-wiggle');
+            }, 500);
+            
+            // Reset and add animation to the display
+            document.getElementById('practiceDisplay').classList.remove('animate-fadeIn');
+            document.getElementById('practiceDisplay').offsetWidth; // Force reflow
+            document.getElementById('practiceDisplay').classList.add('animate-fadeIn');
+            
+            document.getElementById('practiceDisplay').innerHTML = `
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;" class="animate-slideInUp">
+                    <h4 style="margin-bottom: 10px; color: #333;">Practice Word: <strong class="animate-pulse">${practice.word}</strong></h4>
+                    <p style="color: #666;">${practice.gesture.description}</p>
+                    <div style="margin-top: 10px;">
+                        <button class="btn btn-primary animate-pulse" onclick="speakResponse('${practice.word}')">🔊 Hear Word</button>
+                        <button class="btn btn-secondary" onclick="startASLPractice()">🔄 New Word</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        const startQuizBtnRef = document.getElementById('startQuizBtn');
+        if (startQuizBtnRef) startQuizBtnRef.addEventListener('click', () => {
+            const quiz = startASLQuiz();
+            
+            // Add animation to the button
+            const btn = document.getElementById('startQuizBtn');
+            btn.classList.add('animate-wiggle');
+            setTimeout(() => {
+                btn.classList.remove('animate-wiggle');
+            }, 500);
+            
+            // Reset and add animation to the display
+            document.getElementById('quizDisplay').classList.remove('animate-fadeIn');
+            document.getElementById('quizDisplay').offsetWidth; // Force reflow
+            document.getElementById('quizDisplay').classList.add('animate-fadeIn');
+            
+            document.getElementById('quizDisplay').style.display = 'block';
+            document.getElementById('quizDisplay').innerHTML = '';
+            document.getElementById('quizDisplay').appendChild(quiz.display);
+            document.getElementById('nextQuizBtn').disabled = false;
+            
+            // Add animation to quiz options after they're added to the DOM
+            setTimeout(() => {
+                const options = document.querySelectorAll('.quiz-option');
+                options.forEach((option, index) => {
+                    option.classList.add('animate-fadeIn');
+                    option.classList.add(`delay-${(index % 5) + 1}00`);
+                });
+            }, 100);
+        });
+
+        const nextQuizBtnRef = document.getElementById('nextQuizBtn');
+        if (nextQuizBtnRef) nextQuizBtnRef.addEventListener('click', () => {
+            const quiz = startASLQuiz();
+            
+            // Add animation to the button
+            const btn = document.getElementById('nextQuizBtn');
+            btn.classList.add('animate-wiggle');
+            setTimeout(() => {
+                btn.classList.remove('animate-wiggle');
+            }, 500);
+            
+            // Reset and add animation to the display
+            document.getElementById('quizDisplay').classList.remove('animate-fadeIn');
+            document.getElementById('quizDisplay').offsetWidth; // Force reflow
+            document.getElementById('quizDisplay').classList.add('animate-fadeIn');
+            
+            document.getElementById('quizDisplay').innerHTML = '';
+            document.getElementById('quizDisplay').appendChild(quiz.display);
+            
+            // Add animation to quiz options after they're added to the DOM
+            setTimeout(() => {
+                const options = document.querySelectorAll('.quiz-option');
+                options.forEach((option, index) => {
+                    option.classList.add('animate-fadeIn');
+                    option.classList.add(`delay-${(index % 5) + 1}00`);
+                });
+            }, 100);
+        });
+
+        // ASL Finger Spelling Event Listeners - Enhanced with difficulty display and special character handling
+        document.getElementById('fingerSpellBtn').addEventListener('click', () => {
+            const word = document.getElementById('fingerSpellInput').value.trim();
+            if (word) {
+                const fingerSpelled = fingerSpell(word);
+                if (fingerSpelled) {
+                    // Add animation classes
+                    document.getElementById('fingerSpellDisplay').classList.remove('animate-fadeIn');
+                    document.getElementById('fingerSpellDisplay').offsetWidth; // Force reflow
+                    document.getElementById('fingerSpellDisplay').classList.add('animate-fadeIn');
+                    
+                    // Set difficulty badge color
+                    let difficultyColor = '#28a745'; // Green for Easy
+                    if (fingerSpelled.difficulty === 'Medium') {
+                        difficultyColor = '#ffc107'; // Yellow for Medium
+                    } else if (fingerSpelled.difficulty === 'Advanced') {
+                        difficultyColor = '#dc3545'; // Red for Advanced
+                    }
+                    
+                    document.getElementById('fingerSpellDisplay').style.display = 'block';
+                    document.getElementById('fingerSpellResult').innerHTML = `
+                        <div style="text-align: center;" class="animate-slideInUp">
+                            <div style="font-size: 2em; margin-bottom: 10px;" class="animate-bounce">${fingerSpelled.emoji}</div>
+                            <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 5px;">
+                                <h5 style="margin: 0;">${fingerSpelled.name}</h5>
+                                <span style="background: ${difficultyColor}; color: white; padding: 3px 8px; border-radius: 12px; font-size: 0.8em;">
+                                    ${fingerSpelled.difficulty}
+                                </span>
+                            </div>
+                            <p style="color: #666; margin-bottom: 10px;">${fingerSpelled.description}</p>
+                            <p style="color: #666; margin-bottom: 15px; font-size: 0.9em;">
+                                <span style="font-weight: bold;">Letter count:</span> ${fingerSpelled.letterCount} | 
+                                <span style="font-weight: bold;">Confidence:</span> ${fingerSpelled.confidence}%
+                            </p>
+                            <div style="display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; margin-bottom: 15px;">
+                                ${word.split('').map((letter, index) => `
+                                    <span style="background: #667eea; color: white; padding: 5px 8px; border-radius: 4px; font-weight: bold;" class="animate-fadeIn delay-${(index % 5) + 1}00">
+                                        ${letter.toUpperCase()}
+                                    </span>
+                                `).join('')}
+                            </div>
+                            <div style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
+                                ${fingerSpelled.letters.map((letter, index) => `
+                                    <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 5px;" class="animate-fadeIn delay-${(index % 5) + 2}00">
+                                        <div style="font-size: 1.5em; margin-bottom: 5px;">${letter.emoji}</div>
+                                        <span style="background: #f8f9fa; color: #333; padding: 2px 5px; border-radius: 4px; font-size: 0.8em;">
+                                            ${word.charAt(index).toUpperCase()}
+                                        </span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div style="display: flex; gap: 10px; margin-top: 15px; justify-content: center;">
+                                <button id="practiceAgainBtn" class="btn btn-outline-primary">
+                                    🔄 Practice Again
+                                </button>
+                                <button id="practiceModeBtn" class="btn btn-outline-success">
+                                    👨‍🎓 Practice Mode
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Add event listener to the Practice Again button
+                    document.getElementById('practiceAgainBtn').addEventListener('click', () => {
+                        // Clear the input and focus it
+                        document.getElementById('fingerSpellInput').value = '';
+                        document.getElementById('fingerSpellInput').focus();
+                        
+                        // Hide the result display
+                        document.getElementById('fingerSpellDisplay').style.display = 'none';
+                    });
+                    
+                    // Add event listener to the Practice Mode button
+                    document.getElementById('practiceModeBtn').addEventListener('click', () => {
+                        // Create a practice mode overlay
+                        const practiceOverlay = document.createElement('div');
+                        practiceOverlay.className = 'practice-overlay animate-fadeIn';
+                        practiceOverlay.style.position = 'fixed';
+                        practiceOverlay.style.top = '0';
+                        practiceOverlay.style.left = '0';
+                        practiceOverlay.style.width = '100%';
+                        practiceOverlay.style.height = '100%';
+                        practiceOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+                        practiceOverlay.style.zIndex = '1000';
+                        practiceOverlay.style.display = 'flex';
+                        practiceOverlay.style.flexDirection = 'column';
+                        practiceOverlay.style.justifyContent = 'center';
+                        practiceOverlay.style.alignItems = 'center';
+                        practiceOverlay.style.padding = '20px';
+                        
+                        // Create practice content
+                        let currentLetterIndex = 0;
+                        const letters = fingerSpelled.letters;
+                        const word = document.getElementById('fingerSpellInput').value.trim();
+                        
+                        // Create letter display
+                        const letterDisplay = document.createElement('div');
+                        letterDisplay.style.fontSize = '8em';
+                        letterDisplay.style.marginBottom = '30px';
+                        letterDisplay.style.textAlign = 'center';
+                        letterDisplay.innerHTML = letters[currentLetterIndex].emoji;
+                        letterDisplay.className = 'animate-bounce';
+                        
+                        // Create letter info
+                        const letterInfo = document.createElement('div');
+                        letterInfo.style.fontSize = '2em';
+                        letterInfo.style.color = 'white';
+                        letterInfo.style.marginBottom = '20px';
+                        letterInfo.style.textAlign = 'center';
+                        letterInfo.innerHTML = `Letter: <span style="font-weight: bold; color: #667eea;">${word[currentLetterIndex].toUpperCase()}</span>`;
+                        
+                        // Create letter description
+                        const letterDescription = document.createElement('div');
+                        letterDescription.style.fontSize = '1.2em';
+                        letterDescription.style.color = '#ccc';
+                        letterDescription.style.marginBottom = '20px';
+                        letterDescription.style.textAlign = 'center';
+                        letterDescription.style.maxWidth = '600px';
+                        letterDescription.innerHTML = letters[currentLetterIndex].description || 'Form this hand shape';
+                        
+                        // Create visual guide
+                        const visualGuide = document.createElement('div');
+                        visualGuide.style.display = 'flex';
+                        visualGuide.style.flexDirection = 'column';
+                        visualGuide.style.alignItems = 'center';
+                        visualGuide.style.marginBottom = '30px';
+                        visualGuide.style.padding = '15px';
+                        visualGuide.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                        visualGuide.style.borderRadius = '10px';
+                        
+                        const guideTitle = document.createElement('div');
+                        guideTitle.style.fontSize = '1.2em';
+                        guideTitle.style.color = 'white';
+                        guideTitle.style.marginBottom = '10px';
+                        guideTitle.innerHTML = 'How to form this sign:';
+                        
+                        const guideSteps = document.createElement('ol');
+                        guideSteps.style.color = 'white';
+                        guideSteps.style.textAlign = 'left';
+                        guideSteps.style.paddingLeft = '20px';
+                        
+                        // Generate steps based on the letter
+                        let steps = [];
+                        const currentLetter = word[currentLetterIndex].toLowerCase();
+                        
+                        if ('aeiou'.includes(currentLetter)) {
+                            steps = [
+                                'Position your hand in front of your body',
+                                'Form the hand shape shown above',
+                                'This is a vowel, which often has distinct shapes'
+                            ];
+                        } else {
+                            steps = [
+                                'Position your hand in front of your body',
+                                'Form the hand shape shown above',
+                                'Hold the position briefly before moving to the next letter'
+                            ];
+                        }
+                        
+                        // Add specific tips for certain letters
+                        if (currentLetter === 'a') {
+                            steps.push('Make a fist with your thumb resting against the side of your hand');
+                        } else if (currentLetter === 'b') {
+                            steps.push('Hold your hand flat with fingers together and thumb tucked');
+                        } else if (currentLetter === 'c') {
+                            steps.push('Curve your hand into a C shape');
+                        } else if (currentLetter === 'e') {
+                            steps.push('Curl your fingers into your palm');
+                        } else if (currentLetter === 'o') {
+                            steps.push('Form a circle with your fingers and thumb');
+                        }
+                        
+                        steps.forEach(step => {
+                            const listItem = document.createElement('li');
+                            listItem.innerHTML = step;
+                            listItem.style.marginBottom = '5px';
+                            guideSteps.appendChild(listItem);
+                        });
+                        
+                        visualGuide.appendChild(guideTitle);
+                        visualGuide.appendChild(guideSteps);
+                        
+                        // Create progress indicator
+                        const progressIndicator = document.createElement('div');
+                        progressIndicator.style.display = 'flex';
+                        progressIndicator.style.gap = '5px';
+                        progressIndicator.style.marginBottom = '30px';
+                        
+                        for (let i = 0; i < letters.length; i++) {
+                            const dot = document.createElement('div');
+                            dot.style.width = '15px';
+                            dot.style.height = '15px';
+                            dot.style.borderRadius = '50%';
+                            dot.style.backgroundColor = i === currentLetterIndex ? '#667eea' : '#555';
+                            progressIndicator.appendChild(dot);
+                        }
+                        
+                        // Create navigation buttons
+                        const navButtons = document.createElement('div');
+                        navButtons.style.display = 'flex';
+                        navButtons.style.gap = '15px';
+                        
+                        const prevButton = document.createElement('button');
+                        prevButton.className = 'btn btn-outline-light';
+                        prevButton.innerHTML = '⬅️ Previous';
+                        prevButton.disabled = true;
+                        prevButton.addEventListener('click', () => {
+                            if (currentLetterIndex > 0) {
+                                currentLetterIndex--;
+                                updatePracticeDisplay();
+                            }
+                        });
+                        
+                        const nextButton = document.createElement('button');
+                        nextButton.className = 'btn btn-outline-light';
+                        nextButton.innerHTML = 'Next ➡️';
+                        nextButton.addEventListener('click', () => {
+                            if (currentLetterIndex < letters.length - 1) {
+                                currentLetterIndex++;
+                                updatePracticeDisplay();
+                            } else {
+                                // Show completion message
+                                letterDisplay.innerHTML = '🎉';
+                                letterInfo.innerHTML = 'Practice Complete!';
+                                nextButton.disabled = true;
+                                
+                                // Add a close button
+                                const closeButton = document.createElement('button');
+                                closeButton.className = 'btn btn-success';
+                                closeButton.innerHTML = '✓ Finish Practice';
+                                closeButton.style.marginLeft = '15px';
+                                closeButton.addEventListener('click', () => {
+                                    document.body.removeChild(practiceOverlay);
+                                });
+                                navButtons.appendChild(closeButton);
+                            }
+                        });
+                        
+                        const closeButton = document.createElement('button');
+                        closeButton.className = 'btn btn-outline-danger';
+                        closeButton.innerHTML = '✕ Exit';
+                        closeButton.addEventListener('click', () => {
+                            document.body.removeChild(practiceOverlay);
+                        });
+                        
+                        navButtons.appendChild(prevButton);
+                        navButtons.appendChild(nextButton);
+                        navButtons.appendChild(closeButton);
+                        
+                        // Function to update the practice display
+                        function updatePracticeDisplay() {
+                            letterDisplay.innerHTML = letters[currentLetterIndex].emoji;
+                            letterInfo.innerHTML = `Letter: <span style="font-weight: bold; color: #667eea;">${word[currentLetterIndex].toUpperCase()}</span>`;
+                            letterDescription.innerHTML = letters[currentLetterIndex].description || 'Form this hand shape';
+                            
+                            // Update progress dots
+                            Array.from(progressIndicator.children).forEach((dot, index) => {
+                                dot.style.backgroundColor = index === currentLetterIndex ? '#667eea' : '#555';
+                            });
+                            
+                            // Update button states
+                            prevButton.disabled = currentLetterIndex === 0;
+                            nextButton.disabled = currentLetterIndex === letters.length - 1 && nextButton.innerHTML === 'Finish';
+                            
+                            if (currentLetterIndex === letters.length - 1) {
+                                nextButton.innerHTML = 'Finish ✓';
+                            } else {
+                                nextButton.innerHTML = 'Next ➡️';
+                            }
+                            
+                            // Update visual guide
+                            while (guideSteps.firstChild) {
+                                guideSteps.removeChild(guideSteps.firstChild);
+                            }
+                            
+                            // Generate steps based on the letter
+                            let steps = [];
+                            const currentLetter = word[currentLetterIndex].toLowerCase();
+                            
+                            if ('aeiou'.includes(currentLetter)) {
+                                steps = [
+                                    'Position your hand in front of your body',
+                                    'Form the hand shape shown above',
+                                    'This is a vowel, which often has distinct shapes'
+                                ];
+                            } else {
+                                steps = [
+                                    'Position your hand in front of your body',
+                                    'Form the hand shape shown above',
+                                    'Hold the position briefly before moving to the next letter'
+                                ];
+                            }
+                            
+                            // Add specific tips for certain letters
+                            if (currentLetter === 'a') {
+                                steps.push('Make a fist with your thumb resting against the side of your hand');
+                            } else if (currentLetter === 'b') {
+                                steps.push('Hold your hand flat with fingers together and thumb tucked');
+                            } else if (currentLetter === 'c') {
+                                steps.push('Curve your hand into a C shape');
+                            } else if (currentLetter === 'e') {
+                                steps.push('Curl your fingers into your palm');
+                            } else if (currentLetter === 'o') {
+                                steps.push('Form a circle with your fingers and thumb');
+                            }
+                            
+                            steps.forEach(step => {
+                                const listItem = document.createElement('li');
+                                listItem.innerHTML = step;
+                                listItem.style.marginBottom = '5px';
+                                guideSteps.appendChild(listItem);
+                            });
+                            
+                            // Add animation
+                            letterDisplay.classList.remove('animate-bounce');
+                            void letterDisplay.offsetWidth; // Force reflow
+                            letterDisplay.classList.add('animate-bounce');
+                            
+                            // Speak the current letter
+                            speakResponse(`Letter ${word[currentLetterIndex].toUpperCase()}`);
+                        }
+                        
+                        // Add elements to the overlay
+                        practiceOverlay.appendChild(letterDisplay);
+                        practiceOverlay.appendChild(letterInfo);
+                        practiceOverlay.appendChild(letterDescription);
+                        practiceOverlay.appendChild(visualGuide);
+                        practiceOverlay.appendChild(progressIndicator);
+                        practiceOverlay.appendChild(navButtons);
+                        
+                        // Add the overlay to the body
+                        document.body.appendChild(practiceOverlay);
+                        
+                        // Speak the current letter
+                        speakResponse(`Letter ${word[currentLetterIndex].toUpperCase()}`);
+                    });
+                    
+                    speakResponse(`Finger spelling: ${word}. Difficulty level: ${fingerSpelled.difficulty}`);
+                    
+                    // Add wiggle animation to the button
+                    const btn = document.getElementById('fingerSpellBtn');
+                    btn.classList.remove('animate-pulse');
+                    btn.classList.add('animate-wiggle');
+                    setTimeout(() => {
+                        btn.classList.remove('animate-wiggle');
+                        btn.classList.add('animate-pulse');
+                    }, 500);
+                } else {
+                    document.getElementById('fingerSpellDisplay').style.display = 'block';
+                    document.getElementById('fingerSpellResult').innerHTML = `
+                        <div style="text-align: center; color: #dc3545;" class="animate-fadeIn">
+                            <p>Could not finger spell "${word}". Please use letters, numbers, and spaces only.</p>
+                            <button id="tryAgainBtn" class="btn btn-outline-danger" style="margin-top: 10px;">
+                                🔄 Try Again
+                            </button>
+                        </div>
+                    `;
+                    
+                    // Add event listener to the Try Again button
+                    document.getElementById('tryAgainBtn').addEventListener('click', () => {
+                        // Clear the input and focus it
+                        document.getElementById('fingerSpellInput').value = '';
+                        document.getElementById('fingerSpellInput').focus();
+                        
+                        // Hide the result display
+                        document.getElementById('fingerSpellDisplay').style.display = 'none';
+                    });
+                }
+            }
+        });
+
+        // Quick letter buttons for finger spelling
+        document.querySelectorAll('.quick-letter').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const letter = btn.dataset.letter;
+                const currentInput = document.getElementById('fingerSpellInput');
+                currentInput.value += letter;
+                
+                // Add wiggle animation when button is clicked
+                btn.classList.add('animate-wiggle');
+                setTimeout(() => {
+                    btn.classList.remove('animate-wiggle');
+                }, 500);
+            });
+        });
+
+        // ASL Emoji Converter Event Listener - Removed
+
+        
+        // Sign Language Category Selection
+        document.querySelectorAll('.sign-category').forEach(category => {
+            category.addEventListener('click', (e) => {
+                // Remove active class from all categories
+                document.querySelectorAll('.sign-category').forEach(c => {
+                    c.style.borderColor = '#e0e0e0';
+                    c.style.backgroundColor = 'white';
+                });
+                
+                // Get the clicked category element
+                const clickedCategory = e.target.closest('.sign-category');
+                
+                // Add active class to selected category
+                clickedCategory.style.borderColor = '#667eea';
+                clickedCategory.style.backgroundColor = '#f8f9fa';
+                
+                // Add wiggle animation to the clicked category
+                clickedCategory.classList.add('animate-wiggle');
+                setTimeout(() => {
+                    clickedCategory.classList.remove('animate-wiggle');
+                }, 500);
+                
+                // Update selected sign language
+                selectedSignLanguage = clickedCategory.dataset.category;
+                
+                // Show status with animation
+                const statusMessage = `Switched to ${selectedSignLanguage.toUpperCase()} sign language`;
+                showStatus(statusMessage, 'success');
+                
+                // Animate the status message
+                const statusElement = document.querySelector('.status-message');
+                if (statusElement) {
+                    statusElement.classList.add('animate-fadeIn');
+                }
+            });
+        });
+        
+        // Text-to-Speech event listeners
+        if (speakBtn) speakBtn.addEventListener('click', () => {
+            speakBtn.classList.add('animate-wiggle');
+            setTimeout(() => { speakBtn.classList.remove('animate-wiggle'); }, 500);
+            speakText();
+        });
+        if (pauseBtn) pauseBtn.addEventListener('click', () => {
+            pauseBtn.classList.add('animate-wiggle');
+            setTimeout(() => { pauseBtn.classList.remove('animate-wiggle'); }, 500);
+            if (speechSynthesisRef.paused) {
+                resumeSpeech();
+            } else {
+                pauseSpeech();
+            }
+        });
+        if (stopSpeakBtn) stopSpeakBtn.addEventListener('click', () => {
+            stopSpeakBtn.classList.add('animate-wiggle');
+            setTimeout(() => { stopSpeakBtn.classList.remove('animate-wiggle'); }, 500);
+            stopSpeech();
+        });
+        if ('speechSynthesis' in window) {
+            if (speechSynthesisRef.getVoices().length > 0) {
+                loadVoices();
+            } else {
+                speechSynthesisRef.onvoiceschanged = loadVoices;
+            }
+        } else {
+            if (speakBtn) {
+                speakBtn.textContent = '🔊 Not Supported';
+                speakBtn.disabled = true;
+            }
+        }
+
+
+        if (textInput) textInput.addEventListener('input', () => {
+            if (processTextBtn) processTextBtn.disabled = !textInput.value.trim();
+            
+            // Add subtle animation to the text input when typing
+            textInput.classList.remove('animate-pulse');
+            textInput.offsetWidth; // Force reflow
+            if (textInput.value.trim()) {
+                textInput.classList.add('animate-pulse');
+            }
+        });
+
+        if (textInput) textInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey && textInput.value.trim()) {
+                e.preventDefault();
+                
+                // Add wiggle animation to the text input when pressing Enter
+                textInput.classList.add('animate-wiggle');
+                setTimeout(() => {
+                    textInput.classList.remove('animate-wiggle');
+                }, 500);
+                
+                processText();
+            }
+        });
+        
+        // Add animation to process text button
+        if (processTextBtn) processTextBtn.addEventListener('click', () => {
+            // Add wiggle animation to the button
+            processTextBtn.classList.add('animate-wiggle');
+            setTimeout(() => {
+                processTextBtn.classList.remove('animate-wiggle');
+            }, 500);
+        });
+
+        // History item click
+        if (historyList) {
+            historyList.addEventListener('click', (e) => {
+                const historyItem = e.target.closest('.history-item');
+                if (historyItem) {
+                    // Add animation to the clicked history item
+                    historyItem.classList.add('animate-pulse');
+                    setTimeout(() => {
+                        historyItem.classList.remove('animate-pulse');
+                    }, 500);
+                    
+                    const text = historyItem.dataset.text;
+                    textInput.value = text;
+                    
+                    // Add animation to the text input when filled from history
+                    textInput.classList.add('animate-fadeIn');
+                    setTimeout(() => {
+                        textInput.classList.remove('animate-fadeIn');
+                    }, 500);
+                    
+                    processText();
+                }
+            });
+            
+            // Add initial animations to history items when they load
+            const historyItems = historyList.querySelectorAll('.history-item');
+            historyItems.forEach((item, index) => {
+                item.classList.add('animate-fadeIn');
+                item.classList.add(`delay-${(index % 5) + 1}00`);
+            });
+        }
+
+        // Category filter buttons (placeholder functionality)
+        document.querySelectorAll('.category-btn').forEach((btn, index) => {
+            // Add initial animations to category buttons
+            btn.classList.add('animate-fadeIn');
+            btn.classList.add(`delay-${(index % 5) + 1}00`);
+            
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                // Add wiggle animation to the clicked button
+                e.target.classList.add('animate-wiggle');
+                setTimeout(() => {
+                    e.target.classList.remove('animate-wiggle');
+                }, 500);
+            });
+        });
+
+        document.querySelectorAll('.login-container, .camera-container, .category-btn, .quick-letter').forEach(el => el.classList.add('reveal'));
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                btn.appendChild(ripple);
+                ripple.addEventListener('animationend', () => {
+                    if (ripple.parentNode) ripple.parentNode.removeChild(ripple);
+                });
+            });
+        });
+
+        (function(){
+            const inputEl = document.getElementById('slTextInput');
+            const previewEl = document.getElementById('slPreview');
+            const showBtn = document.getElementById('slShowBtn');
+            const animateBtn = document.getElementById('slAnimateBtn');
+            const clearBtn = document.getElementById('slClearBtn');
+            const quickPanel = document.getElementById('slQuickPanel');
+            if (!inputEl || !previewEl) return;
+
+            function buildTile(ch, index) {
+                if (ch === ' ') return null;
+                const tile = document.createElement('div');
+                tile.className = 'sl-tile animate-slideInUp';
+                tile.classList.add(`delay-${((index % 5) + 1) * 100}`);
+                const img = document.createElement('img');
+                if (/[a-zA-Z]/.test(ch)) {
+                    const upper = ch.toUpperCase();
+                    img.src = 'Test Images/' + upper + '_test.jpg';
+                } else {
+                    img.src = 'Test Images/nothing_test.jpg';
+                }
+                img.alt = ch;
+                img.loading = 'lazy';
+                const badge = document.createElement('div');
+                badge.className = 'sl-badge';
+                badge.textContent = ch;
+                tile.appendChild(img);
+                tile.appendChild(badge);
+                return tile;
+            }
+
+            function render(text) {
+                previewEl.innerHTML = '';
+                const chars = Array.from(text || '');
+                chars.forEach((ch, i) => {
+                    const t = buildTile(ch, i);
+                    if (t) previewEl.appendChild(t);
+                });
+            }
+
+            function animateSequence() {
+                const tiles = Array.from(previewEl.children);
+                let idx = 0;
+                if (!tiles.length) return;
+                tiles.forEach(t => t.classList.remove('animate-bounce','animate-pulse'));
+                const run = () => {
+                    tiles.forEach(t => t.classList.remove('animate-bounce','animate-pulse'));
+                    const t = tiles[idx];
+                    if (t) t.classList.add('animate-bounce');
+                    idx = (idx + 1) % tiles.length;
+                };
+                run();
+                const timer = setInterval(run, 800);
+                setTimeout(() => clearInterval(timer), tiles.length * 800 + 1200);
+            }
+
+            function ensureQuickPanel() {
+                if (quickPanel.children.length) return;
+                const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+                letters.forEach(l => {
+                    const b = document.createElement('button');
+                    b.className = 'btn btn-secondary';
+                    b.textContent = l;
+                    b.addEventListener('click', () => {
+                        inputEl.value += l;
+                        render(inputEl.value);
+                    });
+                    quickPanel.appendChild(b);
+                });
+                // Space button removed
+            }
+
+            showBtn.addEventListener('click', () => render(inputEl.value));
+            inputEl.addEventListener('input', () => render(inputEl.value));
+            animateBtn.addEventListener('click', animateSequence);
+            clearBtn.addEventListener('click', () => { inputEl.value = ''; previewEl.innerHTML = ''; });
+            ensureQuickPanel();
+        })();
+
+
+
+
+    </script>
+</body>
+</html>
